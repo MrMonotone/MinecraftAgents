@@ -4,6 +4,9 @@ var States = {
     LOOKINGFORWOOD = 1,
 }
 
+// Maybe use node event emitter?
+// agentBrain.on('foundWood'), agent.on('selectedAction')
+
 function AgentBrain()
 {
     this.visualMemory = [];
@@ -28,6 +31,11 @@ AgentBrain.prototype.selectAction = function ()
             break;
     }
     return this.actionSequence[this.actionCursor++];
+}
+
+AgentBrain.prototype.selectState = function ()
+{
+
 }
 
 AgentBrain.prototype.see = function ()
