@@ -11,17 +11,28 @@ function Agent(bot)
     this.brain = new AgentBrain();
 }
 
+Agent.prototype.act = function ()
+{
+    this.brain.selectState();
+    this.brain.selectAction();
+}
+
 // There is a fancier way to do directions but lets not get too complicated yet
 
-Agent.prototype.toggleSprint = function (toggle)
+Agent.prototype.toggleSprint = function ()
 {
-    bot.setControlState('sprint', toggle);
+    return new Action(() => {
+        this.bot.setControlState('sprint', true);
+    }, () => {
+        this.bot.setControlState('sprint', false);
+    })
 }
 
 Agent.prototype.stop = function ()
 {
     bot.clearControlStates();
 }
+
 Agent.prototype.look = function (yaw, pitch)
 {
     bot.look(yaw, pitch);
@@ -46,9 +57,9 @@ Agent.prototype.toggleDiagonalMove = function (verticalDirection, horizontalDire
 Agent.prototype.toggleMove = function (direction)
 {
     return new Action(() => {
-        bot.setControlState(direction, true);
+        this.bot.setControlState(direction, true);
     }, () => {
-        bot.setControlState(direction, false);
+        this.bot.setControlState(direction, false);
     })
 }
 
