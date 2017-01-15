@@ -1,20 +1,39 @@
-var Direction = {
-    FORWARD: 'forward',
-    BACKWARD: 'back',
-    LEFT: 'left',
-    RIGHT: 'right'
-}
-
 function Agent(bot)
 {
     this.bot = bot;
     this.brain = new AgentBrain();
 }
 
-Agent.prototype.act = function ()
+Agent.prototype.update = function ()
 {
-    this.brain.selectState();
-    this.brain.selectAction();
+    this.brain.update();
+}
+
+Agent.prototype.start = function ()
+{
+    this.brain.start();
+}
+
+Agent.prototype.stop = function ()
+{
+    this.brain.stop();
+}
+
+Agent.prototype.pause = function ()
+{
+    this.brain.pause();
+}
+
+Agent.prototype.resume = function ()
+{
+    this.brain.resume();
+}
+
+var Direction = {
+    FORWARD: 'forward',
+    BACKWARD: 'back',
+    LEFT: 'left',
+    RIGHT: 'right'
 }
 
 // There is a fancier way to do directions but lets not get too complicated yet
@@ -28,7 +47,7 @@ Agent.prototype.toggleSprint = function ()
     })
 }
 
-Agent.prototype.stop = function ()
+Agent.prototype.stopMove = function ()
 {
     bot.clearControlStates();
 }

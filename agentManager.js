@@ -29,7 +29,7 @@ AgentManager.prototype.spawnAgent = function (amount)
 
 AgentManager.prototype.loop = function()
 {
-    agent.act();
+    agent.update();
     this.loop();
 }
 

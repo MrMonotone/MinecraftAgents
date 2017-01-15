@@ -9,36 +9,47 @@ var States = {
 
 function AgentBrain()
 {
-    this.visualMemory = [];
-    this.actionSequence = ROUTINE.States.LOOKINGFORWOOD;
-    this.actionCursor = 0;
+    // this.visualMemory = [];
+    this.actionList = Object.create(ActionList.prototype);
+    // this.actionSequence = ROUTINE.States.LOOKINGFORWOOD;
+    // this.actionCursor = 0;
 }
 
-AgentBrain.prototype.ROUTINE = {
-    [States.LOOKINGFORWOOD]: [],
-    [States.CUTTINGWOOD]: []
-}
-
-AgentBrain.prototype.selectAction = function ()
+AgentBrain.prototype.update = function (delta)
 {
-    var action = () => { console.error("PANIC")};
-    switch (key) {
-        case States.CUTTINGWOOD:
-            this.actionSequence = ROUTINE.States.CUTTINGWOOD;
-            break;
+    this.actionList.update(delta);
+}
+
+AgentBrain.prototype.pause = function ()
+{
+    this.actionList.pause
+}
+
+// AgentBrain.prototype.ROUTINE = {
+//     [States.LOOKINGFORWOOD]: [],
+//     [States.CUTTINGWOOD]: []
+// }
+
+// AgentBrain.prototype.selectAction = function ()
+// {
+//     var action = () => { console.error("PANIC")};
+//     switch (key) {
+//         case States.CUTTINGWOOD:
+//             this.actionSequence = ROUTINE.States.CUTTINGWOOD;
+//             break;
     
-        default:
-            break;
-    }
-    return this.actionSequence[this.actionCursor++];
-}
+//         default:
+//             break;
+//     }
+//     return this.actionSequence[this.actionCursor++];
+// }
 
-AgentBrain.prototype.selectState = function ()
-{
+// AgentBrain.prototype.selectState = function ()
+// {
 
-}
+// }
 
-AgentBrain.prototype.see = function ()
-{
-    // look at stuff?
-}
+// AgentBrain.prototype.see = function ()
+// {
+//     // look at stuff?
+// }
