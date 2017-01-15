@@ -1,2 +1,3 @@
 MinecraftServer/*
 !MinecraftServer/BuildTools.jar
+node_modules
