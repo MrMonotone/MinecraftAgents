@@ -7,8 +7,30 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Program Windows",
             "program": "${workspaceRoot}\\index.js",
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "localhost",
+                "25565"
+            ]
+        },
+                {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program Linux",
+            "program": "${workspaceRoot}/index.js",
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "localhost",
+                "25565"
+            ]
+        },
+                        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program Linux old",
+            "program": "${workspaceRoot}/oldindex.js",
             "cwd": "${workspaceRoot}",
             "args": [
                 "localhost",

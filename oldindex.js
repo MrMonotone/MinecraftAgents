@@ -32,6 +32,10 @@ bot.on('chat', function(username, message) {
     case 'forward':
       bot.setControlState('forward', true);
       break;
+    case 'forwardtest':
+      bot.setControlState('forward', true);
+      bot.setControlState('forward', false)
+      break;
     case 'forwardLeft':
       bot.setControlState('forward', true);
            bot.setControlState('left', true);
