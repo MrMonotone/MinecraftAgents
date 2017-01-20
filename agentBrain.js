@@ -15,6 +15,14 @@ function AgentBrain()
     // this.actionCursor = 0;
 }
 
+AgentBrain.prototype.start = function()
+{
+    let testSequence = actionUtils.serial(new Wait(1000), new StartMoveForward(), new Wait(1000),
+                                          new StopMoveForward(), new Wait(1000), new StartMoveBackward(), 
+                                          new Wait(1000), new StopMoveBackward());
+    this.actionList = testSequence; 
+}
+
 AgentBrain.prototype.update = function (delta)
 {
     this.actionList.update(delta);
@@ -22,7 +30,7 @@ AgentBrain.prototype.update = function (delta)
 
 AgentBrain.prototype.pause = function ()
 {
-    this.actionList.pause
+    this.actionList.pause();
 }
 
 // AgentBrain.prototype.ROUTINE = {

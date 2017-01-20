@@ -1,5 +1,7 @@
 var mineflayer = require('mineflayer');
-var events = require('events');
+var emitter = require('events').EventEmitter;
+var AgentManager = require('./agentManager.js');
+var actionUtils = require('./ActionList/actionUtils');
 
 if(process.argv.length < 4 || process.argv.length > 5) {
   console.log("Usage : node index.js <host> <port> [<numberOfBots>]");
