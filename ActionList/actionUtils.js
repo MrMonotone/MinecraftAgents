@@ -15,7 +15,7 @@
 
 function parallel(actions)
 {
-    let actionList = new ActionList();
+    var actionList = new ActionList();
 
     actions.forEach(function(element) {
         action.unblock();
@@ -27,7 +27,7 @@ function parallel(actions)
 
 function serial(actions)
 {
-    let actionList = new ActionList();
+    var actionList = new ActionList();
     actions.forEach(function(action) {
         action.block();
         actionList.pushBack(action);

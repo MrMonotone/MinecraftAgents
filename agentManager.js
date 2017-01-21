@@ -1,34 +1,30 @@
 
-var mineflayer = mineflayer || require('mineflayer');
+var mineflayer = require('mineflayer');
 // When we want to run multiple agents this will be helpful
-function AgentManager(host, port, amount)
-{
+var Agent = require('./Agent/agent.js')
+function AgentManager(host, port, amount) {
     this.host = host || "localhost";
     this.port = port || 25565;
     this.agents = [];
     this.amount = amount || 1;
 }
 
-AgentManager.prototype.start = function ()
-{
-    for (let i = 0; i < this.amount; ++i)
-    {
+AgentManager.prototype.start = function () {
+    for (var i = 0; i < this.amount; ++i) {
         this.spawnAgent(i);
     }
     this.loop();
-
 }
 
-AgentManager.prototype.spawnAgent = function (id) 
-{
-    let bot = mineflayer.createBot({
+AgentManager.prototype.spawnAgent = function (id) {
+    var bot = mineflayer.createBot({
         host: this.host,
         port: this.port,
         username: "Agent " + id,
         // password: process.argv[5], // sorry microsoft :'(
         verbose: true,
     });
-    let agent = new Agent(bot);
+    var agent = new Agent(bot);
     this.agents.push(agent);
 }
 

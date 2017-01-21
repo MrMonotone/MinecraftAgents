@@ -1,6 +1,9 @@
+var AgentBrain = require('./agentBrain.js')
+
 function Agent(bot){
     this.bot = bot;
     this.brain = new AgentBrain(this);
+    this.start();
 }
 
 Agent.prototype.update = function(){
@@ -27,7 +30,7 @@ Agent.prototype.resume = function()
     this.brain.resume();
 };
 
-let Direction = {
+var Direction = {
     FORWARD: 'forward',
     BACKWARD: 'back',
     LEFT: 'left',
@@ -74,3 +77,5 @@ Agent.prototype.startMove = function(direction) {
 Agent.prototype.stopMove = function(direction) {
     this.bot.setControlState(direction, false);
 }
+
+module.exports = Agent;
