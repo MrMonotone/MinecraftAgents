@@ -1,4 +1,3 @@
-var emitter = require('events').EventEmitter;
 var AgentManager = require('./agentManager.js');
 var actionUtils = require('./ActionList/actionUtils');
 

@@ -12,8 +12,9 @@
 //       new TweenTo(button3, TWEEN_TIME, { y: 300 })
 //     )
 //   );
+var ActionList = require('./actionList.js');
 
-function parallel(actions)
+function parallel(...actions)
 {
     var actionList = new ActionList();
 
@@ -25,7 +26,7 @@ function parallel(actions)
     return actionList;
 }
 
-function serial(actions)
+function serial(...actions)
 {
     var actionList = new ActionList();
     actions.forEach(function(action) {

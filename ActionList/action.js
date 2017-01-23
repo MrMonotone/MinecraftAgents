@@ -2,9 +2,9 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
 // http://allenchou.net/2012/07/action-lists-they-are-cooler-than-commands/
 // https://gamedevelopment.tutsplus.com/tutorials/the-action-list-data-structure-good-for-ui-ai-animations-and-more--gamedev-9264
-
+var EventEmitter = require('events').EventEmitter;
 function Action() {
-    // EventEmitter.call(this);
+    EventEmitter.call(this);
     this.started = false;
     this.finished = false;
     this.paused = false;
@@ -47,3 +47,5 @@ Action.prototype.cancel = function() {
     this.emit('cancelled');
     this.emit('finished');
 };
+
+module.exports = Action;

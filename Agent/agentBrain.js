@@ -7,6 +7,14 @@
 // Maybe use node event emitter?
 // agentBrain.on('foundWood'), agent.on('selectedAction')
 var ActionList = require('../ActionList/actionList.js')
+var actionUtils = require('../ActionList/actionUtils.js')
+
+var Wait = require('../ActionList/actionLibrary.js').Wait;
+var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
+var StopMoveForward = require('../ActionList/actionLibrary.js').StopMoveForward;
+var StartMoveBackward = require('../ActionList/actionLibrary.js').StartMoveBackward;
+var StopMoveBackward = require('../ActionList/actionLibrary.js').StopMoveBackward;
+
 function AgentBrain(agent)
 {
     // this.visualMemory = [];

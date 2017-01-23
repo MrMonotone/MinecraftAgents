@@ -1,3 +1,4 @@
+var Action = require('./action.js')
 function TestAction ()
 {
     Action.call(this)
@@ -89,3 +90,8 @@ StopMoveBackward.prototype.update = function (delta, agent)
     this.complete();
 }
 
+module.exports.Wait = Wait;
+module.exports.StartMoveForward = StartMoveForward;
+module.exports.StopMoveForward = StopMoveForward;
+module.exports.StartMoveBackward = StartMoveBackward;
+module.exports.StopMoveBackward = StopMoveBackward;

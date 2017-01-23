@@ -7,7 +7,8 @@
 //       this.complete();
 //       this.parent.push(new newState(), 0);
 //   }
-var createPool = require('pool');
+var createPool = require('../Pool/pool.js');
+var Action = require('./action.js')
 function ActionList() {
     Action.call(this);
     // We will use lanes to handle reactions?
