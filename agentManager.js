@@ -13,9 +13,11 @@ AgentManager.prototype.start = function () {
     for (var i = 0; i < this.amount; ++i) {
         this.spawnAgent(i);
     }
-    this.loop();
+    // this.startLoop();
+    // console.log("Agents are ready!")
+    // this.loop();
 }
-
+// The agent will not spawn while I am excuting other code???
 AgentManager.prototype.spawnAgent = function (id) {
     var bot = mineflayer.createBot({
         host: this.host,
@@ -24,16 +26,36 @@ AgentManager.prototype.spawnAgent = function (id) {
         // password: process.argv[5], // sorry microsoft :'(
         verbose: true,
     });
+    bot.on('chat', function(username, message) {
+        var test = new Agent(this);
+        test.update();
+    });
     var agent = new Agent(bot);
     this.agents.push(agent);
 }
+//TODO: update to do multiple agents
+AgentManager.prototype.startLoop = function (loop) {
+    if (loop)
+        return;
+    for (var i = 0; i < this.agents.length; i++) {
+        var agent = this.agents[i];
+        if (agent.ready()) {
+            loop = true;
+        }
+    }
+    this.startLoop(loop)
+}
 
-AgentManager.prototype.loop = function()
-{
-    this.agents.forEach(function(agent) {
+AgentManager.prototype.loop = function () {
+    for (var i = 0; i < this.agents.length; i++) {
+        var agent = this.agents[i];
         agent.update();
-    })
+    }
     this.loop();
+}
+function test(agent) {
+    agent.update();
+    test(agent);
 }
 
 module.exports = AgentManager;

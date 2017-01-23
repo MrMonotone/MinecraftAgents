@@ -80,9 +80,12 @@ Agent.prototype.stopMove = function(direction) {
 
 Agent.prototype.ready = function()
 {
-    if(bot.entity)
+
+    // console.log(this.bot.entity)
+    //     console.log("here")
+    if(this.bot.entity)
     {
-        if(bot.entity.onGround)
+        if(this.bot.entity.onGround)
         {
             return true;
         }

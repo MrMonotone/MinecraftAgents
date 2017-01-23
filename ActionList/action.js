@@ -10,12 +10,22 @@ function Action() {
     this.paused = false;
     this.blocking = false;
     this.laneID = 0;
+    // this.on('start', this.OnStarted); // maybe?
+    // this.on('complete', this.OnCompleted);
 }
 
 Action.prototype = Object.create(EventEmitter.prototype);
 Action.prototype.constructor = Action;
 
-Action.prototype.update = function(delta) {
+// Action.prototype.OnStarted = function () {
+
+// }
+
+// Action.prototype.OnCompleted = function () {
+
+// }
+
+Action.prototype.update = function(delta, agent) {
 
 };
 

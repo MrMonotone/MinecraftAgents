@@ -47,6 +47,7 @@ StartMoveForward.prototype.constructor = StartMoveForward;
 
 StartMoveForward.prototype.update = function (delta, agent) 
 {
+    agent.startMove('forward');
     this.complete();
 }
 
