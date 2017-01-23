@@ -21,17 +21,21 @@ function Wait(duration)
     this.duration = duration || 100; // in milliseconds
     this.duration = duration < 0 ? 0 : this.duration;
     this.startTime = 0;
-    this.once('started', function() { this.startTime = Date.now()})
+    this.once('started', function() {this.startTime = Date.now(); })
 }
 
 Wait.prototype = Object.create(Action.prototype);
 Wait.prototype.constructor = Wait;
 
+// Wait.prototype.OnStarted = function() {
+//     this.startTime = Date.now();
+// }
+
 Wait.prototype.update = function (delta) 
 {
     if (Date.now() - this.startTime > this.duration)
     {
-        console.log("Done");
+        console.log("Wait Done");
         this.complete();
     }
 }
@@ -48,6 +52,7 @@ StartMoveForward.prototype.constructor = StartMoveForward;
 StartMoveForward.prototype.update = function (delta, agent) 
 {
     agent.startMove('forward');
+    console.log("Start Move");
     this.complete();
 }
 
@@ -61,6 +66,8 @@ StopMoveForward.prototype.constructor = StopMoveForward;
 
 StopMoveForward.prototype.update = function (delta, agent) 
 {
+    console.log("Stop Move");
+    agent.stopMove('forward');
     this.complete();
 }
 
@@ -75,6 +82,8 @@ StartMoveBackward.prototype.constructor = StartMoveBackward;
 
 StartMoveBackward.prototype.update = function (delta, agent) 
 {
+    console.log("start back");
+    agent.startMove('back');
     this.complete();
 }
 
@@ -88,6 +97,8 @@ StopMoveBackward.prototype.constructor = StopMoveBackward;
 
 StopMoveBackward.prototype.update = function (delta, agent) 
 {
+    console.log("stop back");
+    agent.stopMove('back');
     this.complete();
 }
 

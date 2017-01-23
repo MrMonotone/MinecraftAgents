@@ -84,6 +84,7 @@ ActionList.prototype.update = function (delta, agent) {
             // action completed remove it
             if (action.finished) {
                 lane.actions.splice(i, 1);
+                i--;
                 --this.size;
                 continue;
             }
@@ -93,6 +94,7 @@ ActionList.prototype.update = function (delta, agent) {
                     action.start();
                     if (action.finished) {
                         lane.actions.splice(i, 1);
+                        i--;
                         --this.size;
                         continue;
                     }
@@ -102,6 +104,7 @@ ActionList.prototype.update = function (delta, agent) {
 
                 if (action.finished) {
                     lane.actions.splice(i, 1);
+                    i--;
                     --this.size;
                     continue;
                 }

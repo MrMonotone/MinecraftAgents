@@ -11,5 +11,8 @@
   "devDependencies": {
     "eslint": "^3.13.1",
     "eslint-config-google": "^0.7.1"
+  },
+  "dependencies": {
+    "mineflayer": "^2.0.0"
   }
 }
