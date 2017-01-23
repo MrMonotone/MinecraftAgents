@@ -33,7 +33,7 @@ AgentManager.prototype.spawnAgent = function (id) {
         // test.update();
         // if()
         // self.startLoop(true);
-        setInterval(agent.update.bind(agent), 1000);
+        setInterval(agent.update.bind(agent), 100); // give our agent a reaction time?
         // agent.update();
     });
     this.agents.push(agent);

@@ -26,9 +26,10 @@ function AgentBrain(agent)
 
 AgentBrain.prototype.start = function()
 {
-    var testSequence = actionUtils.serial([new StartMoveForward(), new Wait(1000),
-                                            new StopMoveForward(), new Wait(1000), new StartMoveBackward(), 
-                                            new Wait(1000), new StopMoveBackward(), new Wait(1000)]);
+    var testSequence = actionUtils.serial([new StartMoveForward(), new Wait(3000),
+                                            new StopMoveForward(), new Wait(3000), new StartMoveBackward(), 
+                                            new Wait(3000), new StopMoveBackward(), new Wait(3000), 
+                                            new StartMoveForward(), new Wait(3000), new StopMoveForward()]);
     this.actionList = testSequence; 
 }
 
