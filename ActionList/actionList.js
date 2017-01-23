@@ -9,38 +9,41 @@
 //   }
 var createPool = require('../Pool/pool.js');
 var Action = require('./action.js')
+var ActionLane = require('./actionLane.js')
 function ActionList() {
     Action.call(this);
     // We will use lanes to handle reactions?
-    this.lanes = []; // maybe linked list would be faster???
+    this.lanes = []; // An array of lanes // maybe linked list would be faster???
     this.size = 0;
-    this.pool = null;
 }
 
 ActionList.prototype = Object.create(Action.prototype);
 ActionList.prototype.constructor = ActionList;
 
-ActionList.prototype.getLane = function (lane) {
-    lane = lane || 0;
-    if (!lanes[lane]) {
-        var list = pool.get();
-        list.id = lane;
-        lanes[lane] = list;
+ActionList.prototype.getLane = function (laneID) {
+    laneID = laneID || 0;
+    var lane = this.lanes[laneID];
+    if (!lane) {
+        lane = new ActionLane();
+        lane.id = laneID;
+        this.lanes[laneID] = lane;
     }
-    return lanes[lane];
+    return lane;
 }
 
-ActionList.prototype.pushBack = function (action, lane) {
-    this.getLane(lane).actions.pushBack(action);
-    action.laneId = lane;
-    ++size;
+ActionList.prototype.pushBack = function (action, laneID) {
+    laneID = laneID || 0;
+    this.getLane(laneID).actions.push(action);
+    action.laneID = laneID;
+    ++this.size;
     return this;
 }
 
-ActionList.prototype.pushFront = function (action, lane) {
-    this.getLane(lane).actions.pushFront(action);
-    action.laneId = lane;
-    ++size;
+ActionList.prototype.pushFront = function (action, laneID) {
+    laneID = laneID || 0;
+    this.getLane(laneID).actions.unshift(action);
+    action.laneID = laneID;
+    ++this.size;
     return this;
 }
 
@@ -74,8 +77,8 @@ ActionList.prototype.update = function (delta, agent) {
     // Dont do the action
     if (this.paused || this.finished)
         return;
-    this.lanes.forEach(function (lane) {
-
+    for (var i = 0; i < this.lanes.length; i++) {
+        var lane = this.lanes[i];
         for (var i = 0; i < lane.actions.length; i++) {
             var action = lane.actions[i];
             // action completed remove it
@@ -107,7 +110,7 @@ ActionList.prototype.update = function (delta, agent) {
             if (action.blocking)
                 break;
         }
-    })
+    }
 
     // recycle lanes
 

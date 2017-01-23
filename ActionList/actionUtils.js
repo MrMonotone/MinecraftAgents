@@ -14,11 +14,17 @@
 //   );
 var ActionList = require('./actionList.js');
 
-function parallel(...actions)
+function parallel(actions)
 {
     var actionList = new ActionList();
-
-    actions.forEach(function(element) {
+    // for(var i=0; i < actions.length; i++)
+    // {
+    //     var action = actions[i];
+    //     action.unblock();
+    // }
+    actions.forEach(function(action) {
+        if (action instanceof ActionList)
+            return;
         action.unblock();
         actionList.pushBack(action);
     }, this);
@@ -26,7 +32,7 @@ function parallel(...actions)
     return actionList;
 }
 
-function serial(...actions)
+function serial(actions)
 {
     var actionList = new ActionList();
     actions.forEach(function(action) {

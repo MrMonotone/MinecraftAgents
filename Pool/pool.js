@@ -1,8 +1,8 @@
 var EMPTY = {};
 var NO_OP = function() {};
 
-module.exports = pool;
-function pool(factory, opts) {
+module.exports = createPool;
+function createPool(factory, opts) {
     return new Pool(factory, opts);
 }
 

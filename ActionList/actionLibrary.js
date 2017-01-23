@@ -20,8 +20,8 @@ function Wait(duration)
     Action.call(this)
     this.duration = duration || 100; // in milliseconds
     this.duration = duration < 0 ? 0 : this.duration;
-    this.start = 0;
-    this.once('started', function() { this.start = Date.now()})
+    this.startTime = 0;
+    this.once('started', function() { this.startTime = Date.now()})
 }
 
 Wait.prototype = Object.create(Action.prototype);
@@ -29,7 +29,7 @@ Wait.prototype.constructor = Wait;
 
 Wait.prototype.update = function (delta) 
 {
-    if (Date.now() - this.start > duration)
+    if (Date.now() - this.startTime > this.duration)
     {
         console.log("Done");
         this.complete();

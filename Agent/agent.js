@@ -78,4 +78,16 @@ Agent.prototype.stopMove = function(direction) {
     this.bot.setControlState(direction, false);
 }
 
+Agent.prototype.ready = function()
+{
+    if(bot.entity)
+    {
+        if(bot.entity.onGround)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 module.exports = Agent;

@@ -26,15 +26,15 @@ function AgentBrain(agent)
 
 AgentBrain.prototype.start = function()
 {
-    var testSequence = actionUtils.serial(new Wait(1000), new StartMoveForward(), new Wait(1000),
-                                          new StopMoveForward(), new Wait(1000), new StartMoveBackward(), 
-                                          new Wait(1000), new StopMoveBackward());
+    var testSequence = actionUtils.serial([new Wait(1000), new StartMoveForward(), new Wait(1000),
+                                            new StopMoveForward(), new Wait(1000), new StartMoveBackward(), 
+                                            new Wait(1000), new StopMoveBackward()]);
     this.actionList = testSequence; 
 }
 
 AgentBrain.prototype.update = function(delta)
 {
-    this.actionList.update(delta, agent);
+    this.actionList.update(delta, this.agent);
 }
 
 AgentBrain.prototype.pause = function() {

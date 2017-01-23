@@ -9,7 +9,7 @@ function Action() {
     this.finished = false;
     this.paused = false;
     this.blocking = false;
-    this.lane = 0;
+    this.laneID = 0;
 }
 
 Action.prototype = Object.create(EventEmitter.prototype);
@@ -18,6 +18,14 @@ Action.prototype.constructor = Action;
 Action.prototype.update = function(delta) {
 
 };
+
+Action.prototype.block = function() {
+    this.blocking = true;
+}
+
+Action.prototype.unblock = function() {
+    this.blocking = false;
+}
 
 
 // Events
