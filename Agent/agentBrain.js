@@ -8,13 +8,12 @@
 // agentBrain.on('foundWood'), agent.on('selectedAction')
 var ActionList = require('../ActionList/actionList.js')
 var actionUtils = require('../ActionList/actionUtils.js')
-
-var Wait = require('../ActionList/actionLibrary.js').Wait;
-var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
-var StopMoveForward = require('../ActionList/actionLibrary.js').StopMoveForward;
-var StartMoveBackward = require('../ActionList/actionLibrary.js').StartMoveBackward;
-var StopMoveBackward = require('../ActionList/actionLibrary.js').StopMoveBackward;
-
+var ActionLibrary = require('../ActionList/actionLibrary.js');
+// var Wait = require('../ActionList/actionLibrary.js').Wait;
+// var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
+// var StopMoveForward = require('../ActionList/actionLibrary.js').StopMoveForward;
+// var StartMoveBackward = require('../ActionList/actionLibrary.js').StartMoveBackward;
+// var StopMoveBackward = require('../ActionList/actionLibrary.js').StopMoveBackward;
 function AgentBrain(agent)
 {
     // this.visualMemory = [];
@@ -26,10 +25,13 @@ function AgentBrain(agent)
 
 AgentBrain.prototype.start = function()
 {
-    var testSequence = actionUtils.serial([new StartMoveForward(), new Wait(3000),
-                                            new StopMoveForward(), new Wait(3000), new StartMoveBackward(), 
-                                            new Wait(3000), new StopMoveBackward(), new Wait(3000), 
-                                            new StartMoveForward(), new Wait(3000), new StopMoveForward()]);
+    // var testWait = actionUtils.serial([new ActionLibrary.Wait(3000)]);
+    var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
+                                            new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000), 
+                                            new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000), 
+                                            new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000), 
+                                            new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000), 
+                                            new ActionLibrary.StopMoveForward()]);
     this.actionList = testSequence; 
 }
 
