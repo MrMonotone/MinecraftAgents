@@ -20,10 +20,11 @@ AgentManager.prototype.start = function () {
 // The agent will not spawn while I am excuting other code???
 AgentManager.prototype.spawnAgent = function (id) {
     var self = this;
+    var name = "Agent " + id;
     var bot = mineflayer.createBot({
         host: this.host,
         port: this.port,
-        username: "Agent " + id,
+        username: name,
         // password: process.argv[5], // sorry microsoft :'(
         verbose: true,
     });
