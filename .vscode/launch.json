@@ -15,7 +15,18 @@
                 "25565"
             ]
         },
-                {
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program Windows old",
+            "program": "${workspaceRoot}\\oldindex.js",
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "localhost",
+                "25565"
+            ]
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program Linux",
@@ -26,7 +37,7 @@
                 "25565"
             ]
         },
-                        {
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program Linux old",

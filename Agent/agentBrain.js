@@ -9,38 +9,105 @@
 var ActionList = require('../ActionList/actionList.js')
 var actionUtils = require('../ActionList/actionUtils.js')
 var ActionLibrary = require('../ActionList/actionLibrary.js');
+var Vec3 = require('vec3').Vec3;
 // var Wait = require('../ActionList/actionLibrary.js').Wait;
 // var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
 // var StopMoveForward = require('../ActionList/actionLibrary.js').StopMoveForward;
 // var StartMoveBackward = require('../ActionList/actionLibrary.js').StartMoveBackward;
 // var StopMoveBackward = require('../ActionList/actionLibrary.js').StopMoveBackward;
-function AgentBrain(agent)
-{
+function AgentBrain(agent) {
     // this.visualMemory = [];
     this.agent = agent;
     this.actionList = new ActionList();
+    this.woodID = 17;
+    this.wood = false;
+    this.viewDistance = 100;
     // this.actionSequence = ROUTINE.States.LOOKINGFORWOOD;
     // this.actionCursor = 0;
 }
 
-AgentBrain.prototype.start = function()
-{
+AgentBrain.prototype.start = function () {
     // var testWait = actionUtils.serial([new ActionLibrary.Wait(3000)]);
     var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
-                                            new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StopMoveForward()]);
-    this.actionList = testSequence; 
+    new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000),
+    new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000),
+    new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000),
+    new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
+    new ActionLibrary.StopMoveForward()]);
+    this.actionList = testSequence;
 }
 
-AgentBrain.prototype.update = function(delta)
-{
+// function rayPlayerHeight(from_player) {
+//     var cursor = from_player.entity.position.offset(0, from_player.entity.height, 0);
+//     var yaw = from_player.entity.yaw, pitch = from_player.entity.pitch;
+//     var vector_length = 0.3;
+//     var x = -Math.sin(yaw) * Math.cos(pitch);
+//     var y = Math.sin(pitch);
+//     var z = -Math.cos(yaw) * Math.cos(pitch);
+//     var step_delta = mineflayer.vec3(x * vector_length, y * vector_length, z * vector_length);
+
+//     for (var i = 0; i < 192; i++) {
+//         cursor = cursor.plus(step_delta);
+//         // console.log(cursor)
+//         var block = from_player.blockAt(cursor);
+//         if (block.diggable) {
+//             return block;
+//             // return cursor.floored();
+//         }
+//     }
+//     return undefined;
+// };
+
+AgentBrain.prototype.look = function () {
+    var entity = this.agent.bot.entity;
+    var cursor = entity.position.offset(0, entity.height * 0.75, 0); // Eye Level?
+    var vectorLength = 0.3;
+    var yaw = entity.yaw, pitch = entity.pitch;
+    var x = -Math.sin(yaw) * Math.cos(pitch);
+    var y = Math.sin(pitch);
+    var z = -Math.cos(yaw) * Math.cos(pitch);
+    var step_delta = mineflayer.vec3(x * vector_length, y * vector_length, z * vector_length);
+    for (var i = 0; i < this.viewDistance; ++i) {
+        cursor = cursor.plus(step_delta);
+        var block = this.agent.blockAt(cursor);
+        if (block !== null && block.boundingBox !== "empty") { // Check if the block is not empty
+            if (block.material === "wood")
+                this.wood = block;
+            else
+                this.wood = false;
+            break;
+        }
+    }
+}
+
+AgentBrain.prototype.hasWood = function () {
+    var inv = this.agent.bot.inventory.slots.filter(Boolean);
+
+    for (var i = inv.length - 1; i >= 0; --i) {
+        if (inv[i].type === this.woodID) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// AgentBrain.prototype.findItem = function(inventory, itemId) {
+//   // Remove empty slots to speed up process
+//   var inv = inventory.slots.filter(Boolean);
+
+//   for(var i = inv.length - 1; i >= 0; i--) {
+//     if(inv[i].type === itemId) {
+//       return inv[i];
+//     }
+//   }
+//   return false;
+// }
+
+AgentBrain.prototype.update = function (delta) {
     this.actionList.update(delta, this.agent);
 }
 
-AgentBrain.prototype.pause = function() {
+AgentBrain.prototype.pause = function () {
     this.actionList.pause();
 }
 

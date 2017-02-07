@@ -1,4 +1,8 @@
 var Action = require('./action.js')
+
+//Implement Look random
+//Implement Scan Direction Up down left Right
+
 function TestAction() {
     Action.call(this)
     this.random = 0;
@@ -89,20 +93,75 @@ StopMoveBackward.prototype.update = function(delta, agent) {
     this.complete();
 }
 
-function SpawnLane() {
-    Action.call(this)
+function GetWood() {
+    Action.call(this);
 }
 
-StopMoveBackward.prototype = Object.create(Action.prototype);
-StopMoveBackward.prototype.constructor = StopMoveBackward;
+GetWood.prototype = Object.create(Action.prototype);
+GetWood.prototype.constructor = GetWood;
 
-StopMoveBackward.prototype.update = function(delta, agent) {
-    console.log("stop back");
-    agent.stopMove('back');
-    this.complete();
+GetWood.prototype.update = function(delta, agent) {
+    // if
+    // if (agent.brain.wood) {
+    //     this.complete();
+    // }
+    // agent.lookRandom();
+    // agent.see();
+}
+
+function FindWood() {
+    Action.call(this);
+}
+
+FindWood.prototype = Object.create(Action.prototype);
+FindWood.prototype.constructor = FindWood;
+
+FindWood.prototype.update = function(delta, agent) {
+    if (agent.brain.wood) {
+        this.parent.pushBack(new MoveToWood());
+        this.complete();
+    }
+    agent.lookRandom();
+    agent.brain.look();
+}
+
+function MoveToWood() {
+    Action.call(this);
+}
+
+MoveToWood.prototype = Object.create(Action.prototype);
+MoveToWood.prototype.constructor = MoveToWood;
+
+MoveToWood.prototype.update = function(delta, agent) {
+    if (agent.brain.wood) {
+        agent.startMove('forward');
+        agent.brain.look();
+    } else {
+        agent.stopMove('forward');
+        this.parent.pushBack(new ChopWood());
+        this.complete();
+    }
+}
+
+function ChopWood() {
+    Action.call(this);
+}
+
+ChopWood.prototype = Object.create(Action.prototype);
+ChopWood.prototype.constructor = ChopWood;
+
+ChopWood.prototype.update = function(delta, agent) {
+    if (agent.brain.wood) {
+        agent.use();
+        agent.brain.look();
+    } else {
+        this.parent.pushBack(new FindWood())
+        this.complete();
+    }
 }
 
 module.exports = {
+    GetWood,
     Wait,
     StartMoveForward,
     StopMoveForward,
