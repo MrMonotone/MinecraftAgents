@@ -2,8 +2,9 @@ var Behaviour = require('./behaviour.js');
 
 // Assuming we want one piece of wood
 
+
 // Get some amount of Wood
-function GetWood() {
+function GetWood() { //This would become [FindWood, WalkToWood, ChopWood]
     Behaviour.call(this);
     this.currentAmount = 0;
     this.amount = 1;
@@ -15,14 +16,15 @@ GetWood.prototype.constructor = GetWood;
 GetWood.prototype.update = function (tick, agent) {
     if (this.currentAmount >= this.amount) {
         this.complete();
-    } else { // What the hell would this do??? 
-        // Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
-        this.parent.pushFront(new FindWood()); // push it to the front and block it????
+    } else if (this.size === 0) {
+        this.parent.pushFront(new FindWood());
+    } else {
+        Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
     }
 }
 
 // When would we have an action modify 
-function FindWood() {
+function FindWood() { //This would become [Look, BrainLook, MoveForward]
     Behaviour.call(this);
 }
 
@@ -33,14 +35,12 @@ FindWood.prototype.update = function (tick, agent) {
     if (agent.brain.wood) {
         this.parent.pushBack(new WalkToWood())
         this.complete();
-    }
-    else
-    {
+    } else {
         Behaviour.prototype.update.call(this, tick, agent);
     }
 }
 
-function WalkToWood() {
+function WalkToWood() { //This would become [BrainLook, MoveForward]
     Behaviour.call(this);
 }
 
@@ -60,7 +60,7 @@ WalkToWood.prototype.update = function (tick, agent) {
     }
 }
 
-function ChopWood() {
+function ChopWood() { //This would become [BrainLook, SwingArm]
     Behaviour.call(this);
 }
 
@@ -68,10 +68,9 @@ ChopWood.prototype = Object.create(Behaviour.prototype);
 ChopWood.prototype.constructor = ChopWood;
 
 ChopWood.prototype.update = function (tick, agent) {
-    if(!agent.brain.wood) {
+    if (!agent.brain.wood) {
         this.complete();
-    }
-    else if (agent.brain.nextToWood() && agent.brain.wood) {
+    } else if (agent.brain.nextToWood() && agent.brain.wood) {
         Behaviour.prototype.update.call(this, tick, agent);
     }
 }
