@@ -2,21 +2,22 @@ var Behaviour = require('./behaviour.js');
 
 // Assuming we want one piece of wood
 
+// Get some amount of Wood
 function GetWood() {
     Behaviour.call(this);
+    this.currentAmount = 0;
+    this.amount = 1;
 }
 
 GetWood.prototype = Object.create(Behaviour.prototype);
 GetWood.prototype.constructor = GetWood;
 
 GetWood.prototype.update = function (tick, agent) {
-    if (agent.brain.wood) {
-        this.parent.pushBack(new WalkToWood())
+    if (this.currentAmount >= this.amount) {
         this.complete();
-    }
-    else
-    {
-        Behaviour.prototype.update.call(this, tick, agent);
+    } else { // What the hell would this do??? 
+        // Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
+        // this.parent.pushFront(new FindWood()); // push it to the front and block it????
     }
 }
 
@@ -68,18 +69,10 @@ ChopWood.prototype.constructor = ChopWood;
 
 ChopWood.prototype.update = function (tick, agent) {
     if(!agent.brain.wood) {
-        // Find Wood
-        this.parent.pushFront(new FindWood());
         this.complete();
     }
-    if (agent.brain.nextToWood() && agent.brain.wood) {
+    else if (agent.brain.nextToWood() && agent.brain.wood) {
         Behaviour.prototype.update.call(this, tick, agent);
-    }
-    if (!agent.brain.wood) {
-        // Find Wood;
-        this.complete();
-    } else {
-        
     }
 }
 
