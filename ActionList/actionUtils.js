@@ -18,8 +18,8 @@ function parallel(actions)
 {
     var actionList = new ActionList();
     actions.forEach(function(action) {
-        if (!action instanceof Action)
-            return;
+        // if (!action instanceof Action)
+        //     return;
         action.unblock();
         actionList.pushBack(action);
     }, this);
@@ -31,8 +31,8 @@ function serial(actions)
 {
     var actionList = new ActionList();
     actions.forEach(function(action) {
-        if (!action instanceof Action)
-            return;
+        // if (!action instanceof Action)
+        //     return;
         action.block();
         actionList.pushBack(action);
     }, this);
