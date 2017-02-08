@@ -1,4 +1,25 @@
 var Behaviour = require('./behaviour.js');
+
+// Assuming we want one piece of wood
+
+function GetWood() {
+    Behaviour.call(this);
+}
+
+GetWood.prototype = Object.create(Behaviour.prototype);
+GetWood.prototype.constructor = GetWood;
+
+GetWood.prototype.update = function (tick, agent) {
+    if (agent.brain.wood) {
+        this.parent.pushBack(new WalkToWood())
+        this.complete();
+    }
+    else
+    {
+        Behaviour.prototype.update.call(this, tick, agent);
+    }
+}
+
 // When would we have an action modify 
 function FindWood() {
     Behaviour.call(this);
@@ -28,11 +49,11 @@ WalkToWood.prototype.constructor = WalkToWood;
 WalkToWood.prototype.update = function (tick, agent) {
     if (agent.brain.nextToWood()) {
         // Chop Wood
-        this.parent.pushBack(new ChopWood());
+        // this.parent.pushBack(new ChopWood());
         this.complete();
     } else if (!agent.brain.wood) {
-        // Find Wood;
-        this.parent.pushFront(new FindWood());
+        // Find Wood 
+        this.parent.pushFront(new FindWood()); // we have to find wood before we can chop it
     } else {
         Behaviour.prototype.update.call(this, tick, agent);
     }

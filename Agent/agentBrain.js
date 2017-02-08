@@ -29,10 +29,10 @@ function AgentBrain(agent) {
 AgentBrain.prototype.start = function () {
     // var testWait = actionUtils.serial([new ActionLibrary.Wait(3000)]);
 
-    var findWood = actionUtils.parallel([new ActionLibrary.LookRandom(), new ActionLibrary.StartMoveForward()]);
-    var walkToWood = actionUtils.serial([new ActionLibrary.StartMoveForward()]);
-    var chopWood = actionUtils.serial([new ActionLibrary.BreakBlock()]);
-    var getWood = actionUtils.serial([findWood, walkToWood, chopWood]);
+    // var findWood = actionUtils.parallel([new ActionLibrary.LookRandom(), new ActionLibrary.StartMoveForward()]);
+    // var walkToWood = actionUtils.serial([new ActionLibrary.StartMoveForward()]);
+    // var chopWood = actionUtils.serial([new ActionLibrary.BreakBlock()]);
+    // var getWood = actionUtils.serial([findWood, walkToWood, chopWood]);
     var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
     new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000),
     new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000),

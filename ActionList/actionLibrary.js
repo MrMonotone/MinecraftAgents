@@ -3,6 +3,8 @@ var Action = require('./action.js')
 //Implement Look random
 //Implement Scan Direction Up down left Right
 
+// Actions are the simplest tasks that the agent can perform. These actions are constructed together to create complex behaviours.
+
 function TestAction() {
     Action.call(this)
     this.random = 0;
