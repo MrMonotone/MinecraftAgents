@@ -17,7 +17,7 @@ GetWood.prototype.update = function (tick, agent) {
         this.complete();
     } else { // What the hell would this do??? 
         // Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
-        // this.parent.pushFront(new FindWood()); // push it to the front and block it????
+        this.parent.pushFront(new FindWood()); // push it to the front and block it????
     }
 }
 
