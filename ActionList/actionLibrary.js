@@ -89,81 +89,124 @@ function StopMoveBackward() {
 StopMoveBackward.prototype = Object.create(Action.prototype);
 StopMoveBackward.prototype.constructor = StopMoveBackward;
 
-StopMoveBackward.prototype.update = function(delta, agent) {
+StopMoveBackward.prototype.update = function (delta, agent) {
     console.log("stop back");
     agent.stopMove('back');
     this.complete();
 }
 
-function GetWood() {
-    Action.call(this);
+function RotateHeadRandom() {
+    Action.call(this)
 }
 
-GetWood.prototype = Object.create(Action.prototype);
-GetWood.prototype.constructor = GetWood;
+RotateHeadRandom.prototype = Object.create(Action.prototype);
+RotateHeadRandom.prototype.constructor = RotateHeadRandom;
 
-GetWood.prototype.update = function(delta, agent) {
-    // if
-    // if (agent.brain.wood) {
-    //     this.complete();
-    // }
-    // agent.lookRandom();
-    // agent.see();
-}
-
-function FindWood() {
-    Action.call(this);
-}
-
-FindWood.prototype = Object.create(Action.prototype);
-FindWood.prototype.constructor = FindWood;
-
-FindWood.prototype.update = function(delta, agent) {
-    if (agent.brain.wood) {
-        this.parent.pushBack(new MoveToWood());
-        this.complete();
+RotateHeadRandom.prototype.update = function (delta, agent) {
+    var entity = agent.bot.entity;
+    var yaw = entity.yaw;
+    var pitch = entity.pitch;
+    var increment = Math.floor(Math.random() * 10) + 5;
+    if (Math.random() > 0.5) {
+        if (Math.random() > 0.5) {
+            yaw += increment;
+        } else {
+            yaw -= increment;
+        }
+    } else {
+        if (Math.random() > 0.5) {
+            pitch += increment;
+        } else {
+            pitch -= increment;
+        }
     }
-    agent.lookRandom();
+    agent.bot.look(yaw, pitch)
+    this.complete();
+}
+
+function Look() {
+    Action.call(this)
+}
+
+Look.prototype = Object.create(Action.prototype);
+Look.prototype.constructor = Look;
+
+Look.prototype.update = function (delta, agent) {
     agent.brain.look();
+    this.complete();
 }
 
-function MoveToWood() {
-    Action.call(this);
-}
+// function GetWood() {
+//     Action.call(this);
+// }
 
-MoveToWood.prototype = Object.create(Action.prototype);
-MoveToWood.prototype.constructor = MoveToWood;
+// GetWood.prototype = Object.create(Action.prototype);
+// GetWood.prototype.constructor = GetWood;
 
-MoveToWood.prototype.update = function(delta, agent) {
-    if (agent.brain.wood) {
-        agent.startMove('forward');
-        agent.brain.look();
-    } else {
-        agent.stopMove('forward');
-        this.parent.pushBack(new ChopWood());
-        this.complete();
-    }
-}
+// GetWood.prototype.update = function (delta, agent) {
+//     // if
+//     // if (agent.brain.wood) {
+//     //     this.complete();
+//     // }
+//     // agent.lookRandom();
+//     // agent.see();
+// }
 
-function ChopWood() {
-    Action.call(this);
-}
+// function FindWood() {
+//     Action.call(this);
+// }
 
-ChopWood.prototype = Object.create(Action.prototype);
-ChopWood.prototype.constructor = ChopWood;
+// FindWood.prototype = Object.create(Action.prototype);
+// FindWood.prototype.constructor = FindWood;
 
-ChopWood.prototype.update = function(delta, agent) {
-    if (agent.brain.wood) {
-        agent.use();
-        agent.brain.look();
-    } else {
-        this.parent.pushBack(new FindWood())
-        this.complete();
-    }
-}
+// FindWood.prototype.update = function (delta, agent) {
+//     if (agent.brain.wood) {
+//         this.parent.pushBack(new MoveToWood());
+//         this.complete();
+//     }
+//     agent.lookRandom();
+//     agent.brain.look();
+// }
+
+// function MoveToWood() {
+//     Action.call(this);
+// }
+
+// MoveToWood.prototype = Object.create(Action.prototype);
+// MoveToWood.prototype.constructor = MoveToWood;
+
+// MoveToWood.prototype.update = function (delta, agent) {
+//     if (agent.brain.wood) {
+//         agent.startMove('forward');
+//         agent.brain.look();
+//     } else {
+//         agent.stopMove('forward');
+//         this.parent.pushBack(new ChopWood());
+//         this.complete();
+//     }
+// }
+
+// function ChopWood() {
+//     Action.call(this);
+// }
+
+// ChopWood.prototype = Object.create(Action.prototype);
+// ChopWood.prototype.constructor = ChopWood;
+
+// ChopWood.prototype.update = function (delta, agent) {
+//     if (agent.brain.wood) {
+//         agent.use();
+//         agent.brain.look();
+//     } else {
+//         this.parent.pushBack(new FindWood())
+//         this.complete();
+//     }
+// }
 
 module.exports = {
-    GetWood,
+    // GetWood,
+    RotateHeadRandom,
+    Look,
     Wait,
     StartMoveForward,
     StopMoveForward,

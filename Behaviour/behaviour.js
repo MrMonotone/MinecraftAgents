@@ -1,5 +1,5 @@
-var Action = require('./action.js')
-var ActionLane = require('./actionLane.js')
+// var Action = require('./action.js')
+var ActionList = require('../ActionList/actionList.js')
 // TODO: have the ActionList listen to an action completed to call next action.
 // Use an init method to 
 // Would I need a delta???
@@ -12,3 +12,4 @@ function Behaviour() {
 
 Behaviour.prototype = Object.create(ActionList.prototype);
 Behaviour.prototype.constructor = Behaviour;
+module.exports = Behaviour;

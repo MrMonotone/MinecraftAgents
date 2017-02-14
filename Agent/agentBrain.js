@@ -9,6 +9,7 @@
 var ActionList = require('../ActionList/actionList.js')
 var actionUtils = require('../ActionList/actionUtils.js')
 var ActionLibrary = require('../ActionList/actionLibrary.js');
+var BehaviourLibrary = require('../Behaviour/behaviourLibrary.js');
 var Vec3 = require('vec3').Vec3;
 // var Wait = require('../ActionList/actionLibrary.js').Wait;
 // var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
@@ -33,12 +34,30 @@ AgentBrain.prototype.start = function () {
     // var walkToWood = actionUtils.serial([new ActionLibrary.StartMoveForward()]);
     // var chopWood = actionUtils.serial([new ActionLibrary.BreakBlock()]);
     // var getWood = actionUtils.serial([findWood, walkToWood, chopWood]);
-    var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
-    new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000),
-    new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000),
-    new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000),
-    new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
-    new ActionLibrary.StopMoveForward()]);
+
+    // var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
+    // new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000),
+    // new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000),
+    // new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000),
+    // new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
+    // new ActionLibrary.StopMoveForward()]);
+
+    var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
+    var find = new BehaviourLibrary.FindWood();
+    find.pushBack(new ActionLibrary.RotateHeadRandom());
+    find.pushBack(new ActionLibrary.Look())
+    find.pushBack(new ActionLibrary.StartMoveForward());
+    find.block();
+    var walk = new BehaviourLibrary.WalkToWood();
+    walk.pushBack(new ActionLibrary.StartMoveForward());
+    walk.pushBack(new ActionLibrary.Look())
+    walk.block();
+    var chop = new BehaviourLibrary.ChopWood();
+    chop.pushBack(new ActionLibrary.BreakBlock());
+    chop.block();
+    testSequence.pushBack(find); // Step 1
+    testSequence.pushBack(walk); // Step 2
+    testSequence.pushBack(chop); // Step 3
     this.actionList = testSequence;
 }
 
@@ -76,6 +95,7 @@ AgentBrain.prototype.look = function () {
         cursor = cursor.plus(step_delta);
         var block = this.agent.blockAt(cursor);
         if (block !== null && block.boundingBox !== "empty") { // Check if the block is not empty
+            console.log(block)
             if (block.material === "wood")
                 this.wood = block;
             else

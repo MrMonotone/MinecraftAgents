@@ -1,4 +1,5 @@
 var Behaviour = require('./behaviour.js');
+var ActionLibrary = require('../ActionList/actionLibrary.js')
 
 // Assuming we want one piece of wood
 
@@ -17,7 +18,7 @@ GetWood.prototype.update = function (tick, agent) {
     if (this.currentAmount >= this.amount) {
         this.complete();
     } else if (this.size === 0) {
-        this.parent.pushFront(new FindWood());
+        this.parent.pushBack(new FindWood());
     } else {
         Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
     }
@@ -35,6 +36,8 @@ FindWood.prototype.update = function (tick, agent) {
     if (agent.brain.wood) {
         this.parent.pushBack(new WalkToWood())
         this.complete();
+    } else if (this.size === 0) {
+        this.pushBack(new ActionLibrary.Look());
     } else {
         Behaviour.prototype.update.call(this, tick, agent);
     }
@@ -50,7 +53,8 @@ WalkToWood.prototype.constructor = WalkToWood;
 WalkToWood.prototype.update = function (tick, agent) {
     if (agent.brain.nextToWood()) {
         // Chop Wood
-        // this.parent.pushBack(new ChopWood());
+        this.pushBack(new ActionLibrary.StopMoveForward())
+        this.parent.pushBack(new ChopWood());
         this.complete();
     } else if (!agent.brain.wood) {
         // Find Wood 
@@ -69,9 +73,17 @@ ChopWood.prototype.constructor = ChopWood;
 
 ChopWood.prototype.update = function (tick, agent) {
     if (!agent.brain.wood) {
+        this.parent.currentAmount++;
         this.complete();
     } else if (agent.brain.nextToWood() && agent.brain.wood) {
         Behaviour.prototype.update.call(this, tick, agent);
     }
+}
+
+module.exports = {
+    GetWood,
+    FindWood,
+    ChopWood,
+    WalkToWood
 }
 
