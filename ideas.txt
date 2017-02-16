@@ -1,0 +1,2 @@
+* Decoupling of agent "thinking" from agent "doing"
+* "thinking" action list adds actions to the "doing" action list

@@ -17,14 +17,9 @@ var ActionList = require('./actionList.js');
 function parallel(actions)
 {
     var actionList = new ActionList();
-    // for(var i=0; i < actions.length; i++)
-    // {
-    //     var action = actions[i];
-    //     action.unblock();
-    // }
     actions.forEach(function(action) {
-        if (action instanceof ActionList)
-            return;
+        // if (!action instanceof Action)
+        //     return;
         action.unblock();
         actionList.pushBack(action);
     }, this);
@@ -36,11 +31,15 @@ function serial(actions)
 {
     var actionList = new ActionList();
     actions.forEach(function(action) {
+        // if (!action instanceof Action)
+        //     return;
         action.block();
         actionList.pushBack(action);
     }, this);
     return actionList;
 }
 
-module.exports.parallel = parallel;
-module.exports.serial = serial;
+module.exports = {
+    parallel,
+    serial
+}

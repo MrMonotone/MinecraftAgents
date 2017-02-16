@@ -77,12 +77,13 @@ bot.on('chat', function(username, message) {
       bot.setControlState('jump', false);
       break;
     case 'attack':
-      entity = nearestEntity();
-      if(entity) {
-        bot.attack(entity, true);
-      } else {
-        bot.chat('no nearby entities');
-      }
+      bot.attack(null, true);
+      // entity = nearestEntity();
+      // if(entity) {
+      //   bot.attack(entity, true);
+      // } else {
+      //   bot.chat('no nearby entities');
+      // }
       break;
     case 'pos':
       bot.chat(bot.entity.position);
