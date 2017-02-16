@@ -95,6 +95,19 @@ StopMoveBackward.prototype.update = function (delta, agent) {
     this.complete();
 }
 
+function BreakBlock() {
+    Action.call(this)
+}
+
+BreakBlock.prototype = Object.create(Action.prototype);
+BreakBlock.prototype.constructor = BreakBlock;
+
+BreakBlock.prototype.update = function (delta, agent) {
+    // agent.bot.clearControlStates();
+    agent.dig();
+    this.complete();
+}
+
 function RotateHeadRandom() {
     Action.call(this)
 }
@@ -133,6 +146,7 @@ Look.prototype.constructor = Look;
 
 Look.prototype.update = function (delta, agent) {
     agent.brain.look();
+    console.log("brain look")
     this.complete();
 }
 function LookRandom() {
@@ -147,6 +161,7 @@ LookRandom.prototype.update = function (delta, agent) {
     let yaw = getRandomFloat(-Math.PI / 2, Math.PI / 2);
     let pitch = getRandomFloat(-Math.PI / 2, Math.PI / 2);
     agent.look(yaw, pitch);
+    console.log("move head")
     this.complete();
 }
 //
@@ -243,7 +258,8 @@ module.exports = {
     StopMoveForward,
     StartMoveBackward,
     StopMoveBackward,
-    LookRandom
+    LookRandom,
+    BreakBlock
 }
 // module.exports.Wait = Wait;
 // module.exports.StartMoveForward = StartMoveForward;

@@ -18,7 +18,7 @@ GetWood.prototype.update = function (tick, agent) {
     if (this.currentAmount >= this.amount) {
         this.complete();
     } else if (this.size === 0) {
-        this.parent.pushBack(new FindWood());
+        // this.parent.pushBack(new FindWood());
     } else {
         Behaviour.prototype.update.call(this, tick, agent); // I have no idea how this would work?
     }
@@ -33,11 +33,13 @@ FindWood.prototype = Object.create(Behaviour.prototype);
 FindWood.prototype.constructor = FindWood;
 
 FindWood.prototype.update = function (tick, agent) {
+    console.log(this.size)
     if (agent.brain.wood) {
-        this.parent.pushBack(new WalkToWood())
+        // this.parent.pushBack(new WalkToWood())
         this.complete();
     } else if (this.size === 0) {
         this.pushBack(new ActionLibrary.Look());
+        this.pushBack(new ActionLibrary.LookRandom());
     } else {
         Behaviour.prototype.update.call(this, tick, agent);
     }
@@ -53,12 +55,14 @@ WalkToWood.prototype.constructor = WalkToWood;
 WalkToWood.prototype.update = function (tick, agent) {
     if (agent.brain.nextToWood()) {
         // Chop Wood
-        this.pushBack(new ActionLibrary.StopMoveForward())
-        this.parent.pushBack(new ChopWood());
+        agent.stopMove();
+        // this.parent.pushBack(new ChopWood());
         this.complete();
     } else if (!agent.brain.wood) {
         // Find Wood 
-        this.parent.pushFront(new FindWood()); // we have to find wood before we can chop it
+        var wood = new FindWood();
+        wood.block();
+        this.parent.pushFront(wood); // we have to find wood before we can chop it
     } else {
         Behaviour.prototype.update.call(this, tick, agent);
     }
@@ -73,7 +77,7 @@ ChopWood.prototype.constructor = ChopWood;
 
 ChopWood.prototype.update = function (tick, agent) {
     if (!agent.brain.wood) {
-        this.parent.currentAmount++;
+        // this.parent.currentAmount++;
         this.complete();
     } else if (agent.brain.nextToWood() && agent.brain.wood) {
         Behaviour.prototype.update.call(this, tick, agent);

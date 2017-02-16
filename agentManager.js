@@ -20,7 +20,7 @@ AgentManager.prototype.start = function () {
 // The agent will not spawn while I am excuting other code???
 AgentManager.prototype.spawnAgent = function (id) {
     var self = this;
-    var name = "Agent " + id;
+    var name = "Agent_" + id;
     var bot = mineflayer.createBot({
         host: this.host,
         port: this.port,
@@ -34,7 +34,7 @@ AgentManager.prototype.spawnAgent = function (id) {
         // test.update();
         // if()
         // self.startLoop(true);
-        setInterval(agent.update.bind(agent), 1000); // give our agent a reaction time?
+        setInterval(agent.update.bind(agent), 100); // give our agent a reaction time?
         // agent.update();
     });
     this.agents.push(agent);

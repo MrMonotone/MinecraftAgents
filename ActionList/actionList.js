@@ -118,7 +118,7 @@ ActionList.prototype.update = function (delta, agent) {
     // recycle lanes
 
     if (this.size === 0) {
-        this.complete();
+        // this.complete();
     }
 }
 

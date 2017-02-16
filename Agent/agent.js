@@ -48,8 +48,16 @@ Agent.prototype.stopStrint = function() {
 }
 
 Agent.prototype.stopMove = function() {
-    bot.clearControlStates();
+    this.bot.clearControlStates();
+    this.bot.clearControlStates();
 };
+
+Agent.prototype.dig = function(block) {
+    if(this.brain.wood !== null) {
+    if (this.bot.targetDigBlock === null)
+        this.bot.dig(this.brain.wood);
+    }
+}
 
 Agent.prototype.look = function(yaw, pitch) {
     this.bot.look(yaw, pitch);
@@ -71,11 +79,11 @@ Agent.prototype.stopDiagonalMove = function(verticalDirection, horizontalDirecti
 }
 
 Agent.prototype.startMove = function(direction) {
-    this.bot.setControlState(direction, true);
+    this.bot.setControlState('forward', true);
 };
 
 Agent.prototype.stopMove = function(direction) {
-    this.bot.setControlState(direction, false);
+    this.bot.setControlState("forward", false);
 }
 
 Agent.prototype.ready = function()

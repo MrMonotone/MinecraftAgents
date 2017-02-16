@@ -65,6 +65,7 @@ bot.on('chat', function(username, message) {
       break;
     case 'stop':
       bot.clearControlStates();
+      bot.clearControlStates();
       break;
     case 'jump':
       bot.setControlState('jump', true);

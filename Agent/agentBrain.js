@@ -22,7 +22,7 @@ function AgentBrain(agent) {
     this.actionList = new ActionList();
     this.woodID = 17;
     this.wood = false;
-    this.viewDistance = 100;
+    this.viewDistance = 10;
     // this.actionSequence = ROUTINE.States.LOOKINGFORWOOD;
     // this.actionCursor = 0;
 }
@@ -43,17 +43,26 @@ AgentBrain.prototype.start = function () {
 
     var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
     var find = new BehaviourLibrary.FindWood();
-    find.pushBack(new ActionLibrary.RotateHeadRandom());
+    find.pushBack(new ActionLibrary.LookRandom());
     find.pushBack(new ActionLibrary.Look())
     find.pushBack(new ActionLibrary.StartMoveForward());
     find.block();
+    find.on('completed', function() {
+        console.log('Found wood!')
+    })
     var walk = new BehaviourLibrary.WalkToWood();
     walk.pushBack(new ActionLibrary.StartMoveForward());
     walk.pushBack(new ActionLibrary.Look())
     walk.block();
+        walk.on('completed', function() {
+        console.log('Next to Wood!')
+    })
     var chop = new BehaviourLibrary.ChopWood();
     chop.pushBack(new ActionLibrary.BreakBlock());
     chop.block();
+    chop.on('completed', function() {
+        console.log('chopped')
+    })
     testSequence.pushBack(find); // Step 1
     testSequence.pushBack(walk); // Step 2
     testSequence.pushBack(chop); // Step 3
@@ -89,16 +98,16 @@ AgentBrain.prototype.look = function () {
     var x = -Math.sin(yaw) * Math.cos(pitch);
     var y = Math.sin(pitch);
     var z = -Math.cos(yaw) * Math.cos(pitch);
-    var step_delta = mineflayer.vec3(x * vector_length, y * vector_length, z * vector_length);
+    var step_delta = new Vec3(x * vectorLength, y * vectorLength, z * vectorLength);
     for (var i = 0; i < this.viewDistance; ++i) {
         cursor = cursor.plus(step_delta);
-        var block = this.agent.blockAt(cursor);
+        var block = this.agent.bot.blockAt(cursor);
         if (block !== null && block.boundingBox !== "empty") { // Check if the block is not empty
             console.log(block)
             if (block.material === "wood")
                 this.wood = block;
             else
-                this.wood = false;
+                this.wood = null;
             break;
         }
     }
@@ -112,6 +121,17 @@ AgentBrain.prototype.hasWood = function () {
             return true;
         }
     }
+    return false;
+}
+
+AgentBrain.prototype.nextToWood = function () {
+    if(this.wood !== null) {
+            if (this.agent.bot.entity.position.distanceTo(this.wood.position) < 2)
+    {
+        return true;
+    }
+    }
+
     return false;
 }
 
