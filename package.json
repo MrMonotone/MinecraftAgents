@@ -13,6 +13,7 @@
     "eslint-config-google": "^0.7.1"
   },
   "dependencies": {
+    "minecraft-protocol": "^1.1.1",
     "mineflayer": "^2.0.0"
   }
 }

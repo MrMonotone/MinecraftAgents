@@ -25,14 +25,14 @@ function AgentBrain(agent)
 
 AgentBrain.prototype.start = function()
 {
-    // var testWait = actionUtils.serial([new ActionLibrary.Wait(3000)]);
-    var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
-                                            new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000), 
-                                            new ActionLibrary.StopMoveForward()]);
-    this.actionList = testSequence; 
+    var test2 = actionUtils.serial([new ActionLibrary.LookRandom()]);
+    // var testSequence = actionUtils.serial([new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
+    //                                         new ActionLibrary.StopMoveForward(), new ActionLibrary.Wait(3000), 
+    //                                         new ActionLibrary.StartMoveBackward(), new ActionLibrary.Wait(3000), 
+    //                                         new ActionLibrary.StopMoveBackward(), new ActionLibrary.Wait(3000), 
+    //                                         new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000), 
+    //                                         new ActionLibrary.StopMoveForward()]);
+    this.actionList = test2; 
 }
 
 AgentBrain.prototype.update = function(delta)

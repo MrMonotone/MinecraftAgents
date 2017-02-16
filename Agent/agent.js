@@ -52,7 +52,7 @@ Agent.prototype.stopMove = function() {
 };
 
 Agent.prototype.look = function(yaw, pitch) {
-    bot.look(yaw, pitch);
+    this.bot.look(yaw, pitch);
 };
 
 Agent.prototype.lookAtPosition = function(position) {

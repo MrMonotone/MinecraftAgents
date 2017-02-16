@@ -102,12 +102,48 @@ StopMoveBackward.prototype.update = function(delta, agent) {
     this.complete();
 }
 
+function LookRandom() {
+    Action.call(this)
+    this.random = 0;
+}
+
+LookRandom.prototype = Object.create(Action.prototype);
+LookRandom.prototype.constructor = LookRandom;
+
+LookRandom.prototype.update = function (delta, agent) {
+    let yaw = getRandomFloat(-Math.PI / 2, Math.PI / 2);
+    let pitch = getRandomFloat(-Math.PI / 2, Math.PI / 2);
+    agent.look(yaw, pitch);
+    this.complete();
+}
+//
+function ScanDirection() {
+    Action.call(this)
+    this.random = 0;
+}
+
+ScanDirection.prototype = Object.create(Action.prototype);
+ScanDirection.prototype.constructor = ScanDirection;
+
+ScanDirection.prototype.update = function (delta, agent) {
+    
+    this.complete();
+}
+
+function getRandomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+
+
+
 module.exports = {
     Wait,
     StartMoveForward,
     StopMoveForward,
     StartMoveBackward,
-    StopMoveBackward
+    StopMoveBackward,
+    LookRandom
 }
 // module.exports.Wait = Wait;
 // module.exports.StartMoveForward = StartMoveForward;
