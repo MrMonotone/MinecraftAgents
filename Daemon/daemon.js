@@ -48,6 +48,7 @@ Daemon.prototype.succeeds = function () {
 
 Daemon.prototype.succeed = function () {
     this.succeed = true;
+    this.finished = true;
     this.emit('success');
 }
 
