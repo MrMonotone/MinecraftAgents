@@ -17,6 +17,7 @@ var ActionLane = require('./actionLane.js')
 function StuffList() {
     Action.call(this);
     // We will use lanes to handle reactions?
+    this.successes = 0;
     this.lanes = []; // An array of lanes // maybe linked list would be faster???
     this.size = 0;
 }
@@ -75,38 +76,65 @@ StuffList.prototype.pushFront = function (action, laneID) {
 
 
 StuffList.prototype.update = function (delta, agent) {
+
     // Dont do the action
     if (this.paused || this.finished)
         return;
+
+    if (this.failed) {
+        
+    }
+    if (this.succeed) {
+        this.complete();
+    }
     for (var i = 0; i < this.lanes.length; i++) {
-        var lane = this.lanes[i];
+        var lane = this.lanes[i]; // We only
         for (var i = 0; i < lane.actions.length; i++) {
             var action = lane.actions[i];
             // action completed remove it
-            if (action.finished) {
-                lane.actions.splice(i, 1);
-                i--;
-                --this.size;
+            // if (action.finished) {
+            //     lane.actions.splice(i, 1);
+            //     i--;
+            //     --this.size;
+            //     continue;
+            // }
+
+            if (action.succeed) {
+                action.finished = true;
                 continue;
+            } else if (action.failed) {
+                this.successes = 0;
+                this.failure();
             }
 
             if (!action.paused) {
                 if (!action.started) {
                     action.start();
-                    if (action.finished) {
-                        lane.actions.splice(i, 1);
-                        i--;
-                        --this.size;
+                    // if (action.finished) {
+                    //     lane.actions.splice(i, 1);
+                    //     i--;
+                    //     --this.size;
+                    //     continue;
+                    // }
+                    if (action.succeed) {
+                        action.finished = true;
                         continue;
+                    } else if (action.failed) {
+                        this.successes = 0;
+                        this.failure();
                     }
                 }
 
                 action.update(delta, agent);
 
-                if (action.finished) {
-                    lane.actions.splice(i, 1);
-                    i--;
-                    --this.size;
+                // if (action.finished) {
+                //     lane.actions.splice(i, 1);
+                //     i--;
+                //     --this.size;
+                //     continue;
+                // }
+                if (action.succeed) {
+                    action.finished = true;
                     continue;
                 }
             }
@@ -118,8 +146,8 @@ StuffList.prototype.update = function (delta, agent) {
 
     // recycle lanes
 
-    if (this.size === 0) {
-        // this.complete();
+    if (this.size === this.successes) {
+        this.succeed();
     }
 }
 

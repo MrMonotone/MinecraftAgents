@@ -3,12 +3,17 @@
 // http://allenchou.net/2012/07/action-lists-they-are-cooler-than-commands/
 // https://gamedevelopment.tutsplus.com/tutorials/the-action-list-data-structure-good-for-ui-ai-animations-and-more--gamedev-9264
 var EventEmitter = require('events').EventEmitter;
-function Daemon(success, fail) {
+function Daemon(succeeds, fail) {
     EventEmitter.call(this);
-    success = success || this.success;
-    fail = fail || this.fail;
+
+    succeeds = succeeds || this.succeeds;
+    fails = fails || this.fails;
+
     this.started = false;
     this.finished = false;
+
+    this.succeed = false;
+    this.failed = false;
 
     this.paused = false;
     this.blocking = false;
@@ -31,21 +36,23 @@ Daemon.prototype.unblock = function() {
     this.blocking = false;
 }
 
-Daemon.prototype.fail = function() {
+Daemon.prototype.fails = function() {
     return false;
 }
 
-Daemon.prototype.success = function () {
+Daemon.prototype.succeeds = function () {
     return false;
 }
 
 // Events
 
 Daemon.prototype.succeed = function () {
+    this.succeed = true;
     this.emit('success');
 }
 
 Daemon.prototype.failure = function () {
+    this.failed = true;
     this.emit('failure');
 }
 

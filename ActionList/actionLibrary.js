@@ -16,7 +16,7 @@ TestAction.prototype.constructor = TestAction;
 TestAction.prototype.update = function (delta) {
     console.log("Test")
     random += Math.random();
-    this.complete();
+    this.succeed();
 }
 
 function Wait(duration) {
@@ -37,7 +37,7 @@ Wait.prototype.constructor = Wait;
 Wait.prototype.update = function (delta) {
     if (Date.now() - this.startTime > this.duration) {
         console.log("Wait Done");
-        this.complete();
+        this.succeed();
     }
 }
 
@@ -52,7 +52,7 @@ StartMoveForward.prototype.constructor = StartMoveForward;
 StartMoveForward.prototype.update = function (delta, agent) {
     agent.startMove('forward');
     console.log("Start Move");
-    this.complete();
+    this.succeed();
 }
 
 function StopMoveForward() {
@@ -65,7 +65,7 @@ StopMoveForward.prototype.constructor = StopMoveForward;
 StopMoveForward.prototype.update = function (delta, agent) {
     console.log("Stop Move");
     agent.stopMove('forward');
-    this.complete();
+    this.succeed();
 }
 
 
@@ -79,7 +79,7 @@ StartMoveBackward.prototype.constructor = StartMoveBackward;
 StartMoveBackward.prototype.update = function (delta, agent) {
     console.log("start back");
     agent.startMove('back');
-    this.complete();
+    this.succeed();
 }
 
 function StopMoveBackward() {
@@ -92,7 +92,7 @@ StopMoveBackward.prototype.constructor = StopMoveBackward;
 StopMoveBackward.prototype.update = function (delta, agent) {
     console.log("stop back");
     agent.stopMove('back');
-    this.complete();
+    this.succeed();
 }
 
 function BreakBlock() {
@@ -105,7 +105,7 @@ BreakBlock.prototype.constructor = BreakBlock;
 BreakBlock.prototype.update = function (delta, agent) {
     // agent.bot.clearControlStates();
     agent.dig();
-    this.complete();
+    this.succeed();
 }
 
 function RotateHeadRandom() {
@@ -134,7 +134,7 @@ RotateHeadRandom.prototype.update = function (delta, agent) {
         }
     }
     agent.bot.look(yaw, pitch)
-    this.complete();
+    this.succeed();
 }
 
 function Look() {
@@ -147,7 +147,7 @@ Look.prototype.constructor = Look;
 Look.prototype.update = function (delta, agent) {
     agent.brain.look();
     console.log("brain look")
-    this.complete();
+    this.succeed();
 }
 function LookRandom() {
     Action.call(this)
@@ -162,7 +162,7 @@ LookRandom.prototype.update = function (delta, agent) {
     let pitch = getRandomFloat(-Math.PI / 2, Math.PI / 2);
     agent.look(yaw, pitch);
     console.log("move head")
-    this.complete();
+    this.succeed();
 }
 //
 function ScanDirection() {
@@ -175,7 +175,7 @@ ScanDirection.prototype.constructor = ScanDirection;
 
 ScanDirection.prototype.update = function (delta, agent) {
     
-    this.complete();
+    this.succeed();
 }
 
 function getRandomFloat(min, max) {
@@ -192,7 +192,7 @@ function getRandomFloat(min, max) {
 // GetWood.prototype.update = function (delta, agent) {
 //     // if
 //     // if (agent.brain.wood) {
-//     //     this.complete();
+//     //     this.succeed();
 //     // }
 //     // agent.lookRandom();
 //     // agent.see();
@@ -208,7 +208,7 @@ function getRandomFloat(min, max) {
 // FindWood.prototype.update = function (delta, agent) {
 //     if (agent.brain.wood) {
 //         this.parent.pushBack(new MoveToWood());
-//         this.complete();
+//         this.succeed();
 //     }
 //     agent.lookRandom();
 //     agent.brain.look();
@@ -228,7 +228,7 @@ function getRandomFloat(min, max) {
 //     } else {
 //         agent.stopMove('forward');
 //         this.parent.pushBack(new ChopWood());
-//         this.complete();
+//         this.succeed();
 //     }
 // }
 
@@ -245,7 +245,7 @@ function getRandomFloat(min, max) {
 //         agent.brain.look();
 //     } else {
 //         this.parent.pushBack(new FindWood())
-//         this.complete();
+//         this.succeed();
 //     }
 // }
 
