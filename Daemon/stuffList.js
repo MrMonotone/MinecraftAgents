@@ -8,28 +8,28 @@
 //       this.parent.push(new newState(), 0);
 //   }
 // var createPool = require('../Pool/pool.js');
-var Action = require('../ActionList/action.js')
-var ActionLane = require('..ActionList/actionLane.js')
+var Daemon = require('./daemon')
+var ActionLane = require('../ActionList/actionLane.js')
 // TODO: have the ActionList listen to an action completed to call next action.
 // Use an init method to 
 // Would I need a delta???
 
 function StuffList(success, failure) {
-    Action.call(this, success, failure);
+    Daemon.call(this, success, failure);
     // We will use lanes to handle reactions?
     this.successes = 0;
     this.lanes = []; // An array of lanes // maybe linked list would be faster???
     this.size = 0;
 }
 
-StuffList.prototype = Object.create(Action.prototype);
+StuffList.prototype = Object.create(Daemon.prototype);
 StuffList.prototype.constructor = StuffList;
 
 StuffList.prototype.getLane = function (laneID) {
     laneID = laneID || 0;
     var lane = this.lanes[laneID];
     if (!lane) {
-        lane = new StuffList();
+        lane = new ActionLane();
         lane.id = laneID;
         this.lanes[laneID] = lane;
     }
@@ -87,25 +87,33 @@ StuffList.prototype.update = function (delta, agent) {
                     continue;
 
                 //Check Succession and failure before 
-                if (action.succeed) {
+                // action.succeed = action.succeeds(agent);
+                // action.failed = action.fails(agent);
+                if (action.succeeded) {
                     action.finished = true;
                     this.successes++;
                     continue;
                 } else if (action.failed) {
-                    this.successes = 0;
+                    this.successes = successes - 1 == -1 ? 0 : successes - 1;
+                    lane.actions[i - 1 == -1 ? 0 : i - 1].finished = false;
                     this.failure();
+                    break;
                 }
-
                 action.update(delta, agent);
 
-                //Check Succession and failure before 
-                if (action.succeed) {
+                
+                //Check Succession and failure before
+                // action.succeed = action.succeeds(agent);
+                // action.failed = action.fails(agent);
+                if (action.succeeded) {
                     action.finished = true;
                     this.successes++;
                     continue;
                 } else if (action.failed) {
-                    this.successes = 0;
+                    this.successes = successes - 1 == -1 ? 0 : successes - 1;
+                    lane.actions[i - 1 == -1 ? 0 : i - 1].finished = false;
                     this.failure();
+                    break;
                 }
 
                 // This action is blocking so we need to break
