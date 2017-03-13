@@ -10,6 +10,8 @@ var ActionList = require('../ActionList/actionList.js')
 var actionUtils = require('../ActionList/actionUtils.js')
 var ActionLibrary = require('../ActionList/actionLibrary.js');
 var BehaviourLibrary = require('../Behaviour/behaviourLibrary.js');
+var daemonUtils = require('../Daemon/daemonUtils');
+var DaemonLibrary = require('../Daemon/daemonLibrary');
 var Vec3 = require('vec3').Vec3;
 // var Wait = require('../ActionList/actionLibrary.js').Wait;
 // var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
@@ -41,32 +43,105 @@ AgentBrain.prototype.start = function () {
     // new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
     // new ActionLibrary.StopMoveForward()]);
 
-    var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
-    var find = new BehaviourLibrary.FindWood();
-    find.pushBack(new ActionLibrary.LookRandom());
-    find.pushBack(new ActionLibrary.Look())
-    find.pushBack(new ActionLibrary.StartMoveForward());
-    find.block();
-    find.on('completed', function() {
+    // var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
+    // var find = new BehaviourLibrary.FindWood();
+    // find.pushBack(new ActionLibrary.LookRandom());
+    // find.pushBack(new ActionLibrary.Look())
+    // find.pushBack(new ActionLibrary.StartMoveForward());
+    // find.block();
+    // find.on('completed', function() {
+    //     console.log('Found wood!')
+    // })
+    // var walk = new BehaviourLibrary.WalkToWood();
+    // walk.pushBack(new ActionLibrary.StartMoveForward());
+    // walk.pushBack(new ActionLibrary.Look())
+    // walk.block();
+    //     walk.on('completed', function() {
+    //     console.log('Next to Wood!')
+    // })
+    // var chop = new BehaviourLibrary.ChopWood();
+    // chop.pushBack(new ActionLibrary.BreakBlock());
+    // chop.block();
+    // chop.on('completed', function() {
+    //     console.log('chopped')
+    // })
+    // testSequence.pushBack(find); // Step 1
+    // testSequence.pushBack(walk); // Step 2
+    // testSequence.pushBack(chop); // Step 3
+    // this.actionList = testSequence;
+    var find = daemonUtils.serial([new DaemonLibrary.LookRandom(), new DaemonLibrary.Look(), new DaemonLibrary.StartMoveForward()])
+    find.on('success', function() {
         console.log('Found wood!')
     })
-    var walk = new BehaviourLibrary.WalkToWood();
-    walk.pushBack(new ActionLibrary.StartMoveForward());
-    walk.pushBack(new ActionLibrary.Look())
-    walk.block();
-        walk.on('completed', function() {
-        console.log('Next to Wood!')
+    find.on('failure', function() {
+        console.log('Unable to find wood!')
     })
-    var chop = new BehaviourLibrary.ChopWood();
-    chop.pushBack(new ActionLibrary.BreakBlock());
-    chop.block();
-    chop.on('completed', function() {
-        console.log('chopped')
+    find.succeeds = function (agent) {
+        if (agent.brain.wood) {
+            return true
+        }
+        return false;
+    }
+
+    find.fails = function (agent) {
+        return false; // this can never fail?
+    }
+
+    var walk = daemonUtils.serial([new DaemonLibrary.StartMoveForward(), new DaemonLibrary.Look()])
+    walk.on('success', function() {
+        console.log('Walked to wood!')
     })
-    testSequence.pushBack(find); // Step 1
-    testSequence.pushBack(walk); // Step 2
-    testSequence.pushBack(chop); // Step 3
-    this.actionList = testSequence;
+    walk.on('failure', function() {
+        console.log('Unable to walk to wood!')
+    })
+    walk.succeeds = function (agent) {
+        if(agent.brain.nextToWood())
+            return true;
+        return false;
+    }
+    walk.fails = function (agent) {
+        if(!agent.brain.wood) {
+            return true;
+        }
+        return false;
+    }
+
+    var chop = daemonUtils.serial([new DaemonLibrary.BreakBlock()])
+    chop.on('success', function() {
+        console.log('Walked to wood!')
+    })
+    chop.on('failure', function() {
+        console.log('Unable to walk to wood!')
+    })
+    chop.succeeds = function (agent) {
+        if (!agent.brain.wood) {
+            return true;
+        }
+        return false;
+    }
+    chop.fails = function (agent) {
+        // no failure for now?
+        // if (!agent.brain.nextToWood() && agent.brain.wood) {
+
+        // }
+        return false;
+    }
+
+    var get = daemonUtils.serial([find, walk, chop]);
+    get.on('success', function() {
+        // console.log('Got a piece of Wood!')
+    })
+    get.on('failure', function() {
+        // console.log('Unable to get wood!')
+    })
+    get.succeeds = function () { // No success or failure for now
+        return false;
+    }
+    get.fails = function () {
+        return false;
+    }
+
+    this.actionList = get;
 }
 
 // function rayPlayerHeight(from_player) {
