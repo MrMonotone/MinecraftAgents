@@ -17,7 +17,6 @@ var ActionLane = require('../ActionList/actionLane.js')
 function StuffList(success, failure) {
     Daemon.call(this, success, failure);
     // We will use lanes to handle reactions?
-    this.successes = 0;
     this.lanes = []; // An array of lanes // maybe linked list would be faster???
     this.size = 0;
 }
@@ -81,6 +80,14 @@ StuffList.prototype.update = function (delta, agent) {
     if (!this.finished) {
         for (var i = 0; i < this.lanes.length; i++) {
             var lane = this.lanes[i]; // We only
+            if (lane.actions[this.size - 1].succeeded) {
+                if (this.succeeds(agent)) {
+                    this.succeed();
+                } else {
+                    this.failure();
+                    lane.reset();
+                }
+            }
             for (var i = 0; i < lane.actions.length; i++) {
                 var action = lane.actions[i];
                 if (action.finished)
@@ -90,12 +97,14 @@ StuffList.prototype.update = function (delta, agent) {
                 // action.succeed = action.succeeds(agent);
                 // action.failed = action.fails(agent);
                 if (action.succeeded) {
-                    action.finished = true;
-                    this.successes++;
+                    action.complete();
+                    action.succeed();
                     continue;
                 } else if (action.failed) {
-                    this.successes = successes - 1 == -1 ? 0 : successes - 1;
-                    lane.actions[i - 1 == -1 ? 0 : i - 1].finished = false;
+                    var prevAction = lane.actions[i - 1 == -1 ? 0 : i - 1];
+                    prevAction.finished = false;
+                    action.failed = false;
+                    action.finished = false;
                     this.failure();
                     break;
                 }
@@ -106,25 +115,31 @@ StuffList.prototype.update = function (delta, agent) {
                 // action.succeed = action.succeeds(agent);
                 // action.failed = action.fails(agent);
                 if (action.succeeded) {
-                    action.finished = true;
-                    this.successes++;
+                    action.complete();
+                    action.succeed();
                     continue;
                 } else if (action.failed) {
-                    this.successes = successes - 1 == -1 ? 0 : successes - 1;
-                    lane.actions[i - 1 == -1 ? 0 : i - 1].finished = false;
+                    var prevAction = lane.actions[i - 1 == -1 ? 0 : i - 1];
+                    prevAction.finished = false;
+                    action.failed = false;
+                    action.finished = false;
                     this.failure();
                     break;
                 }
 
                 // This action is blocking so we need to break
-                if (action.blocking && !action.finished) // I think this and is impossible but who knows
+                if (action.blocking)
                     break;
             }
+            if (lane.actions[this.size - 1].succeeded) {
+                if (this.succeeds(agent)) {
+                    this.succeed();
+                } else {
+                    this.failure();
+                    lane.reset();
+                }
+            }
         }
-    }
-
-    if (this.size === this.successes) {
-        this.succeed();
     }
 }
 

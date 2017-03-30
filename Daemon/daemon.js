@@ -3,6 +3,13 @@
 // http://allenchou.net/2012/07/action-lists-they-are-cooler-than-commands/
 // https://gamedevelopment.tutsplus.com/tutorials/the-action-list-data-structure-good-for-ui-ai-animations-and-more--gamedev-9264
 var EventEmitter = require('events').EventEmitter;
+
+// A blocked Daemon will not execute the next action in its respective collection.
+// A paused Daemon will not be processed until not paused.
+// The started flag is set right before the first update is called on a Daemon
+// The finish flag is set after an action succeeds or fails.
+// The succeeded flag is set after an action succeeds.
+// The failed flag is set after an action fails.
 function Daemon(succeeds, fails) {
     EventEmitter.call(this);
 
@@ -16,6 +23,7 @@ function Daemon(succeeds, fails) {
     this.failed = false;
 
     this.paused = false;
+    // Prevents daemons executing after it in a collection.
     this.blocking = false;
 
     this.laneID = 0;
@@ -48,7 +56,6 @@ Daemon.prototype.succeeds = function (agent) {
 
 Daemon.prototype.succeed = function () {
     this.succeeded = true;
-    this.finished = true;
     this.emit('success');
 }
 

@@ -6,6 +6,6 @@ if(process.argv.length < 4 || process.argv.length > 5) {
   process.exit(1);
 }
 
-var agentManager = new AgentManager(process.argv[2], parseInt(process.argv[3]));
+var agentManager = new AgentManager(process.argv[2], parseInt(process.argv[3]), 3);
 
 agentManager.start();

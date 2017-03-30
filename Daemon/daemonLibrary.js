@@ -1,4 +1,4 @@
-var Daemon = require('./Daemon.js')
+var Daemon = require('./daemon.js')
 
 //Implement Look random
 //Implement Scan Direction Up down left Right
@@ -51,7 +51,7 @@ StartMoveForward.prototype.constructor = StartMoveForward;
 
 StartMoveForward.prototype.update = function (delta, agent) {
     agent.startMove('forward');
-    console.log("Start Move");
+    // console.log("Start Move");
     this.succeed();
 }
 
@@ -63,7 +63,7 @@ StopMoveForward.prototype = Object.create(Daemon.prototype);
 StopMoveForward.prototype.constructor = StopMoveForward;
 
 StopMoveForward.prototype.update = function (delta, agent) {
-    console.log("Stop Move");
+    // console.log("Stop Move");
     agent.stopMove('forward');
     this.succeed();
 }
@@ -90,13 +90,18 @@ StopMoveBackward.prototype = Object.create(Daemon.prototype);
 StopMoveBackward.prototype.constructor = StopMoveBackward;
 
 StopMoveBackward.prototype.update = function (delta, agent) {
-    console.log("stop back");
+    // console.log("stop back");
     agent.stopMove('back');
     this.succeed();
 }
 
 function BreakBlock() {
     Daemon.call(this)
+    this.tblock = null;
+    this.test = function() {
+            this.tblock = null;
+            this.succeed();
+        }
 }
 
 BreakBlock.prototype = Object.create(Daemon.prototype);
@@ -104,8 +109,10 @@ BreakBlock.prototype.constructor = BreakBlock;
 
 BreakBlock.prototype.update = function (delta, agent) {
     // agent.bot.clearControlStates();
-    agent.dig();
-    this.succeed();
+    if (this.tblock == null) {
+        this.tblock = agent.brain.wood;
+        agent.dig(this.test.bind(this));
+    }
 }
 
 function RotateHeadRandom() {
@@ -146,7 +153,7 @@ Look.prototype.constructor = Look;
 
 Look.prototype.update = function (delta, agent) {
     agent.brain.look();
-    console.log("brain look")
+    // console.log("brain look")
     this.succeed();
 }
 function LookRandom() {
@@ -161,7 +168,7 @@ LookRandom.prototype.update = function (delta, agent) {
     let yaw = getRandomFloat(-Math.PI / 2, Math.PI / 2);
     let pitch = getRandomFloat(-Math.PI / 2, Math.PI / 2);
     agent.look(yaw, pitch);
-    console.log("move head")
+    // console.log("move head")
     this.succeed();
 }
 //

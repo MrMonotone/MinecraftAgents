@@ -70,6 +70,7 @@ AgentBrain.prototype.start = function () {
     // testSequence.pushBack(chop); // Step 3
     // this.actionList = testSequence;
     var find = daemonUtils.serial([new DaemonLibrary.LookRandom(), new DaemonLibrary.Look(), new DaemonLibrary.StartMoveForward()])
+    find.block();
     find.on('success', function() {
         console.log('Found wood!')
     })
@@ -82,12 +83,13 @@ AgentBrain.prototype.start = function () {
         }
         return false;
     }
-
-    find.fails = function (agent) {
-        return false; // this can never fail?
-    }
+    // This will never fail so it does not need a failure condition.
+    // find.fails = function (agent) {
+    //     return false; // this can never fail?
+    // }
 
     var walk = daemonUtils.serial([new DaemonLibrary.StartMoveForward(), new DaemonLibrary.Look()])
+    walk.block();
     walk.on('success', function() {
         console.log('Walked to wood!')
     })
@@ -95,7 +97,7 @@ AgentBrain.prototype.start = function () {
         console.log('Unable to walk to wood!')
     })
     walk.succeeds = function (agent) {
-        if(agent.brain.nextToWood())
+        if(agent.brain.nextToWood() && agent.brain.wood)
             return true;
         return false;
     }
@@ -106,36 +108,37 @@ AgentBrain.prototype.start = function () {
         return false;
     }
 
-    var chop = daemonUtils.serial([new DaemonLibrary.BreakBlock()])
+    var chop = daemonUtils.serial([new DaemonLibrary.StopMoveForward(), new DaemonLibrary.Look(), new DaemonLibrary.BreakBlock()])
+    chop.block();
     chop.on('success', function() {
-        console.log('Walked to wood!')
+        console.log('Chopped wood!')
     })
     chop.on('failure', function() {
-        console.log('Unable to walk to wood!')
+        console.log('Unable to chop wood!')
     })
+    // succeeds on breaking block?
     chop.succeeds = function (agent) {
-        if (!agent.brain.wood) {
-            return true;
-        }
-        return false;
+        return true;
     }
     chop.fails = function (agent) {
         // no failure for now?
-        // if (!agent.brain.nextToWood() && agent.brain.wood) {
-
+        // if (agent.brain.nextToWood() && !agent.brain.wood) {
+        //     return true;
         // }
         return false;
     }
 
     var get = daemonUtils.serial([find, walk, chop]);
+    get.block();
     get.on('success', function() {
-        // console.log('Got a piece of Wood!')
-    })
+        console.log('Completed wood task!')
+        this.actionList = null;
+    }.bind(this))
     get.on('failure', function() {
-        // console.log('Unable to get wood!')
+        // console.log('Unable to complete wood task!')
     })
     get.succeeds = function () { // No success or failure for now
-        return false;
+        return true;
     }
     get.fails = function () {
         return false;
@@ -178,7 +181,7 @@ AgentBrain.prototype.look = function () {
         cursor = cursor.plus(step_delta);
         var block = this.agent.bot.blockAt(cursor);
         if (block !== null && block.boundingBox !== "empty") { // Check if the block is not empty
-            console.log(block)
+            // console.log(block)
             if (block.material === "wood")
                 this.wood = block;
             else
@@ -201,12 +204,10 @@ AgentBrain.prototype.hasWood = function () {
 
 AgentBrain.prototype.nextToWood = function () {
     if(this.wood !== null) {
-            if (this.agent.bot.entity.position.distanceTo(this.wood.position) < 2)
-    {
-        return true;
+        if (this.agent.bot.entity.position.distanceTo(this.wood.position) < 2) {
+            return true;
+        }
     }
-    }
-
     return false;
 }
 
@@ -223,7 +224,8 @@ AgentBrain.prototype.nextToWood = function () {
 // }
 
 AgentBrain.prototype.update = function (delta) {
-    this.actionList.update(delta, this.agent);
+    if (this.actionList)
+        this.actionList.update(delta, this.agent);
 }
 
 AgentBrain.prototype.pause = function () {
