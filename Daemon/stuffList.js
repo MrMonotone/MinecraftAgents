@@ -75,25 +75,26 @@ StuffList.prototype.pushFront = function (action, laneID) {
 
 StuffList.prototype.update = function (delta, agent) {
         // Dont do the action
-    if (this.paused)
+    if (this.paused || this.finished)
         return;
-    if (!this.finished) {
         for (var i = 0; i < this.lanes.length; i++) {
-            var lane = this.lanes[i]; // We only
+            var lane = this.lanes[i]; 
+            // TODO:? if we have other lanes they need to succeed too?
             if (lane.actions[this.size - 1].succeeded) {
                 if (this.succeeds(agent)) {
                     this.succeed();
-                } else {
+                } else { // if(this.fails(agent)) { // do we need to have a failure condition? if it doesnt succeed it has to fail?
                     this.failure();
                     lane.reset();
                 }
             }
+
             for (var i = 0; i < lane.actions.length; i++) {
                 var action = lane.actions[i];
                 if (action.finished)
                     continue;
 
-                //Check Succession and failure before 
+                //Check Succession and failure before ???
                 // action.succeed = action.succeeds(agent);
                 // action.failed = action.fails(agent);
                 if (action.succeeded) {
@@ -101,17 +102,22 @@ StuffList.prototype.update = function (delta, agent) {
                     action.succeed();
                     continue;
                 } else if (action.failed) {
+                    // Get the previous action make sure its not failed.
                     var prevAction = lane.actions[i - 1 == -1 ? 0 : i - 1];
                     prevAction.finished = false;
+
+                    // Reset the action
                     action.failed = false;
                     action.finished = false;
+
                     this.failure();
                     break;
                 }
+
                 action.update(delta, agent);
 
                 
-                //Check Succession and failure before
+                //Check Succession and failure before ???
                 // action.succeed = action.succeeds(agent);
                 // action.failed = action.fails(agent);
                 if (action.succeeded) {
@@ -119,10 +125,15 @@ StuffList.prototype.update = function (delta, agent) {
                     action.succeed();
                     continue;
                 } else if (action.failed) {
+
+                    // Get the previous action make sure its not failed.
                     var prevAction = lane.actions[i - 1 == -1 ? 0 : i - 1];
                     prevAction.finished = false;
+
+                    // Reset the action
                     action.failed = false;
                     action.finished = false;
+
                     this.failure();
                     break;
                 }
@@ -131,16 +142,16 @@ StuffList.prototype.update = function (delta, agent) {
                 if (action.blocking)
                     break;
             }
+            // TODO:? if we have other lanes they need to succeed too?
             if (lane.actions[this.size - 1].succeeded) {
                 if (this.succeeds(agent)) {
                     this.succeed();
-                } else {
+                } else { // if(this.fails(agent)) { // do we need to have a failure condition? if it doesnt succeed it has to fail?
                     this.failure();
                     lane.reset();
                 }
             }
         }
-    }
 }
 
 
