@@ -10,6 +10,8 @@ var ActionList = require('../ActionList/actionList.js')
 var actionUtils = require('../ActionList/actionUtils.js')
 var ActionLibrary = require('../ActionList/actionLibrary.js');
 var BehaviourLibrary = require('../Behaviour/behaviourLibrary.js');
+var daemonUtils = require('../Daemon/daemonUtils');
+var DaemonLibrary = require('../Daemon/daemonLibrary');
 var Vec3 = require('vec3').Vec3;
 // var Wait = require('../ActionList/actionLibrary.js').Wait;
 // var StartMoveForward = require('../ActionList/actionLibrary.js').StartMoveForward;
@@ -41,32 +43,108 @@ AgentBrain.prototype.start = function () {
     // new ActionLibrary.StartMoveForward(), new ActionLibrary.Wait(3000),
     // new ActionLibrary.StopMoveForward()]);
 
-    var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
-    var find = new BehaviourLibrary.FindWood();
-    find.pushBack(new ActionLibrary.LookRandom());
-    find.pushBack(new ActionLibrary.Look())
-    find.pushBack(new ActionLibrary.StartMoveForward());
+    // var testSequence = new BehaviourLibrary.GetWood(); // Objective / Testing Objective
+    // var find = new BehaviourLibrary.FindWood();
+    // find.pushBack(new ActionLibrary.LookRandom());
+    // find.pushBack(new ActionLibrary.Look())
+    // find.pushBack(new ActionLibrary.StartMoveForward());
+    // find.block();
+    // find.on('completed', function() {
+    //     console.log('Found wood!')
+    // })
+    // var walk = new BehaviourLibrary.WalkToWood();
+    // walk.pushBack(new ActionLibrary.StartMoveForward());
+    // walk.pushBack(new ActionLibrary.Look())
+    // walk.block();
+    //     walk.on('completed', function() {
+    //     console.log('Next to Wood!')
+    // })
+    // var chop = new BehaviourLibrary.ChopWood();
+    // chop.pushBack(new ActionLibrary.BreakBlock());
+    // chop.block();
+    // chop.on('completed', function() {
+    //     console.log('chopped')
+    // })
+    // testSequence.pushBack(find); // Step 1
+    // testSequence.pushBack(walk); // Step 2
+    // testSequence.pushBack(chop); // Step 3
+    // this.actionList = testSequence;
+    var find = daemonUtils.serial([new DaemonLibrary.LookRandom(), new DaemonLibrary.Look(), new DaemonLibrary.StartMoveForward()])
     find.block();
-    find.on('completed', function() {
+    find.on('success', function() {
         console.log('Found wood!')
     })
-    var walk = new BehaviourLibrary.WalkToWood();
-    walk.pushBack(new ActionLibrary.StartMoveForward());
-    walk.pushBack(new ActionLibrary.Look())
+    find.on('failure', function() {
+        console.log('Unable to find wood!')
+    })
+    find.succeeds = function (agent) {
+        if (agent.brain.wood) {
+            return true
+        }
+        return false;
+    }
+    // This will never fail so it does not need a failure condition.
+    // find.fails = function (agent) {
+    //     return false; // this can never fail?
+    // }
+
+    var walk = daemonUtils.serial([new DaemonLibrary.StartMoveForward(), new DaemonLibrary.Look()])
     walk.block();
-        walk.on('completed', function() {
-        console.log('Next to Wood!')
+    walk.on('success', function() {
+        console.log('Walked to wood!')
     })
-    var chop = new BehaviourLibrary.ChopWood();
-    chop.pushBack(new ActionLibrary.BreakBlock());
+    walk.on('failure', function() {
+        console.log('Unable to walk to wood!')
+    })
+    walk.succeeds = function (agent) {
+        if(agent.brain.nextToWood() && agent.brain.wood)
+            return true;
+        return false;
+    }
+    walk.fails = function (agent) {
+        if(!agent.brain.wood) {
+            return true;
+        }
+        return false;
+    }
+
+    var chop = daemonUtils.serial([new DaemonLibrary.StopMoveForward(), new DaemonLibrary.Look(), new DaemonLibrary.BreakBlock()])
     chop.block();
-    chop.on('completed', function() {
-        console.log('chopped')
+    chop.on('success', function() {
+        console.log('Chopped wood!')
     })
-    testSequence.pushBack(find); // Step 1
-    testSequence.pushBack(walk); // Step 2
-    testSequence.pushBack(chop); // Step 3
-    this.actionList = testSequence;
+    chop.on('failure', function() {
+        console.log('Unable to chop wood!')
+    })
+    // succeeds on breaking block?
+    chop.succeeds = function (agent) {
+        return true;
+    }
+    chop.fails = function (agent) {
+        // no failure for now?
+        // if (agent.brain.nextToWood() && !agent.brain.wood) {
+        //     return true;
+        // }
+        return false;
+    }
+
+    var get = daemonUtils.serial([find, walk, chop]);
+    get.block();
+    get.on('success', function() {
+        console.log('Completed wood task!')
+        this.actionList = null;
+    }.bind(this))
+    get.on('failure', function() {
+        // console.log('Unable to complete wood task!')
+    })
+    get.succeeds = function () { // No success or failure for now
+        return true;
+    }
+    get.fails = function () {
+        return false;
+    }
+
+    this.actionList = get;
 }
 
 // function rayPlayerHeight(from_player) {
@@ -103,7 +181,7 @@ AgentBrain.prototype.look = function () {
         cursor = cursor.plus(step_delta);
         var block = this.agent.bot.blockAt(cursor);
         if (block !== null && block.boundingBox !== "empty") { // Check if the block is not empty
-            console.log(block)
+            // console.log(block)
             if (block.material === "wood")
                 this.wood = block;
             else
@@ -126,12 +204,10 @@ AgentBrain.prototype.hasWood = function () {
 
 AgentBrain.prototype.nextToWood = function () {
     if(this.wood !== null) {
-            if (this.agent.bot.entity.position.distanceTo(this.wood.position) < 2)
-    {
-        return true;
+        if (this.agent.bot.entity.position.distanceTo(this.wood.position) < 2) {
+            return true;
+        }
     }
-    }
-
     return false;
 }
 
@@ -148,7 +224,8 @@ AgentBrain.prototype.nextToWood = function () {
 // }
 
 AgentBrain.prototype.update = function (delta) {
-    this.actionList.update(delta, this.agent);
+    if (this.actionList)
+        this.actionList.update(delta, this.agent);
 }
 
 AgentBrain.prototype.pause = function () {
